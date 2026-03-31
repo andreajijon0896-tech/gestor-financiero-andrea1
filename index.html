@@ -6,7 +6,6 @@
     <title>Gestor Financiero</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -121,6 +120,7 @@
             background: linear-gradient(180deg, #E8D6FF 0%, #D6E8FF 100%);
             padding: 40px 24px;
             border-right: 1px solid #f0f0f0;
+            overflow-y: auto;
         }
 
         .sidebar-title {
@@ -153,11 +153,46 @@
             background: var(--bg-light);
         }
 
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
         .header-title {
             font-size: 1.8rem;
             font-weight: 700;
             color: var(--text-dark);
-            margin-bottom: 40px;
+        }
+
+        .mes-selector {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .mes-selector button {
+            background: white;
+            border: 2px solid #e8e8e8;
+            padding: 10px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-dark);
+            transition: all 0.3s;
+        }
+
+        .mes-selector button:hover {
+            border-color: var(--mint);
+            color: var(--mint);
+        }
+
+        .mes-actual {
+            font-weight: 700;
+            color: var(--text-dark);
+            min-width: 150px;
+            text-align: center;
         }
 
         .section {
@@ -168,7 +203,7 @@
             display: block;
         }
 
-        .dashboard {
+        .dashboard-cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 24px;
@@ -194,12 +229,27 @@
             font-size: 2.2rem;
             font-weight: 700;
             color: var(--text-dark);
+            margin-bottom: 12px;
         }
 
         .card-subtitle {
             font-size: 0.85rem;
             color: var(--text-light);
-            margin-top: 8px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--mint-light) 0%, var(--mint) 100%);
+            transition: width 0.3s;
         }
 
         .section-title {
@@ -207,74 +257,120 @@
             font-weight: 700;
             color: var(--text-dark);
             margin-bottom: 20px;
-            margin-top: 30px;
+            margin-top: 40px;
         }
 
-        .summary-box {
+        table {
+            width: 100%;
             background: white;
-            padding: 20px;
+            border-collapse: collapse;
             border-radius: 12px;
-            margin-bottom: 20px;
+            overflow: hidden;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            margin-bottom: 40px;
         }
 
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid #f0f0f0;
+        thead {
+            background: linear-gradient(135deg, #E8D6FF 0%, #D6E8FF 100%);
         }
 
-        .summary-row:last-child {
-            border-bottom: none;
-        }
-
-        .summary-label {
-            color: var(--text-light);
-            font-weight: 500;
-        }
-
-        .summary-value {
-            font-weight: 700;
-            color: var(--text-dark);
-        }
-
-        .item-section {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        }
-
-        .item-row {
-            display: grid;
-            grid-template-columns: auto 2fr 1fr 1fr auto;
-            gap: 12px;
-            align-items: center;
-            padding: 16px 12px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .item-row:last-child {
-            border-bottom: none;
-        }
-
-        .checkbox {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            accent-color: var(--mint);
-        }
-
-        .item-name {
-            font-weight: 500;
-            color: var(--text-dark);
-        }
-
-        .item-monto {
+        th {
+            padding: 16px;
+            text-align: left;
             font-weight: 600;
             color: var(--text-dark);
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        tr:hover {
+            background: #fafafa;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .estado-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .estado-pendiente {
+            background: #FFE5E5;
+            color: #d63031;
+        }
+
+        .estado-parcial {
+            background: #FFF4D6;
+            color: #d67f00;
+        }
+
+        .estado-pagado {
+            background: #E5F9F0;
+            color: var(--mint);
+        }
+
+        select {
+            padding: 8px 12px;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--mint);
+        }
+
+        input[type="number"] {
+            padding: 8px 12px;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            font-family: inherit;
+            width: 100%;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--mint);
+        }
+
+        .falta-pagar {
+            background: #FFE5E5;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+        }
+
+        .falta-item {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .falta-item:last-child {
+            border-bottom: none;
+        }
+
+        .falta-nombre {
+            font-weight: 600;
+            color: #d63031;
+        }
+
+        .falta-monto {
+            font-weight: 700;
+            color: #d63031;
         }
 
         .btn {
@@ -287,16 +383,6 @@
             transition: all 0.3s;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, var(--mint-light) 0%, var(--mint) 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(94, 206, 159, 0.3);
-        }
-
         .btn-logout {
             background: var(--pink);
             color: #d63031;
@@ -306,105 +392,39 @@
             background: #FFC4D6;
         }
 
-        .btn-add {
-            background: linear-gradient(135deg, var(--mint-light) 0%, var(--mint) 100%);
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            margin-top: 16px;
-            width: 100%;
-            transition: all 0.3s;
-        }
-
-        .btn-add:hover {
-            transform: translateY(-2px);
-        }
-
-        .btn-delete {
-            background: var(--pink);
-            color: #d63031;
-            padding: 8px 12px;
-            font-size: 0.85rem;
-        }
-
-        .btn-delete:hover {
-            background: #FFC4D6;
-        }
-
-        .input-field {
-            padding: 8px 12px;
-            border: 1px solid #e8e8e8;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-family: inherit;
-        }
-
-        .input-field:focus {
-            outline: none;
-            border-color: var(--mint);
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 40px;
-            border-radius: 16px;
-            max-width: 500px;
-            width: 90%;
-        }
-
-        .modal-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: var(--text-dark);
-        }
-
-        .emoji-picker {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-
-        .emoji-btn {
-            padding: 12px;
-            border: 2px solid #f0f0f0;
-            background: white;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.5rem;
-            transition: all 0.2s;
-        }
-
-        .emoji-btn:hover, .emoji-btn.selected {
-            border-color: var(--mint);
-            background: #f0f9f6;
-        }
-
         .loading {
             text-align: center;
             padding: 60px 20px;
             color: var(--text-light);
+        }
+
+        .mes-nav {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 40px;
+        }
+
+        .mes-option {
+            flex: 1;
+            padding: 10px;
+            background: white;
+            border: 2px solid #e8e8e8;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-light);
+            transition: all 0.3s;
+        }
+
+        .mes-option.active {
+            background: linear-gradient(135deg, var(--mint-light) 0%, var(--mint) 100%);
+            border-color: var(--mint);
+            color: white;
+        }
+
+        .mes-option:hover {
+            border-color: var(--mint);
         }
     </style>
 </head>
@@ -442,93 +462,33 @@
         </div>
 
         <div class="main-content">
-            <h1 class="header-title">Gestor Financiero</h1>
+            <div class="header">
+                <h1 class="header-title">Gestor Financiero</h1>
+                <div class="mes-selector">
+                    <button onclick="mesAnterior()">←</button>
+                    <div class="mes-actual" id="mesActual">Marzo 2026</div>
+                    <button onclick="mesSiguiente()">→</button>
+                </div>
+            </div>
 
             <div id="loadingMessage" class="loading">Cargando...</div>
 
             <!-- DASHBOARD -->
             <div id="section-dashboard" class="section">
-                <div class="dashboard" id="dashboardCards"></div>
+                <div class="dashboard-cards" id="dashboardCards"></div>
+                <div id="faltaPagarContainer"></div>
             </div>
 
             <!-- INGRESOS -->
             <div id="section-ingresos" class="section">
-                <h2 class="section-title">💵 Ingresos</h2>
-                
-                <div class="summary-box">
-                    <div class="summary-row">
-                        <span class="summary-label">Ingresos Recurrentes (Marcados)</span>
-                        <span class="summary-value" id="totalRecurrente">$0</span>
-                    </div>
-                    <div class="summary-row">
-                        <span class="summary-label">Ingresos Esporádicos</span>
-                        <span class="summary-value" id="totalEsporadico">$0</span>
-                    </div>
-                    <div class="summary-row" style="border-bottom: 2px solid var(--mint) !important; padding-top: 12px !important; margin-top: 12px !important;">
-                        <span style="font-weight: 700; color: var(--mint);">TOTAL REGISTRADO</span>
-                        <span class="summary-value" style="color: var(--mint); font-size: 1.1rem;" id="totalIngresos">$0</span>
-                    </div>
-                </div>
-
-                <div class="item-section">
-                    <h3 style="margin-bottom: 16px; font-size: 1rem; color: var(--text-dark);">📊 Recurrentes por Compañía</h3>
-                    <div id="ingresosRecurrentesContainer"></div>
-                </div>
-
-                <div class="item-section">
-                    <h3 style="margin-bottom: 16px; font-size: 1rem; color: var(--text-dark);">✨ Esporádicos</h3>
-                    <div id="ingresosEsporadicosContainer"></div>
-                    <button class="btn-add" onclick="abrirModalIngresoEsporadico()">+ Agregar Ingreso Esporádico</button>
-                </div>
+                <h2 class="section-title">💵 Ingresos - <span id="mesIngresos"></span></h2>
+                <div id="tablasIngresos"></div>
             </div>
 
             <!-- EGRESOS -->
             <div id="section-egresos" class="section">
-                <h2 class="section-title">💸 Egresos</h2>
-                
-                <div class="summary-box">
-                    <div class="summary-row">
-                        <span class="summary-label">Gastos Fijos (Pagados)</span>
-                        <span class="summary-value" id="totalFijos">$0</span>
-                    </div>
-                    <div class="summary-row">
-                        <span class="summary-label">Cuotas Deudas (Pagadas)</span>
-                        <span class="summary-value" id="totalDeudas">$0</span>
-                    </div>
-                    <div class="summary-row">
-                        <span class="summary-label">Gastos Personales</span>
-                        <span class="summary-value" id="totalPersonales">$0</span>
-                    </div>
-                    <div class="summary-row">
-                        <span class="summary-label">Egresos Esporádicos (Pagados)</span>
-                        <span class="summary-value" id="totalEgresosEspo">$0</span>
-                    </div>
-                    <div class="summary-row" style="border-bottom: 2px solid #d63031 !important; padding-top: 12px !important; margin-top: 12px !important;">
-                        <span style="font-weight: 700; color: #d63031;">TOTAL REGISTRADO</span>
-                        <span class="summary-value" style="color: #d63031; font-size: 1.1rem;" id="totalEgresos">$0</span>
-                    </div>
-                </div>
-
-                <div class="item-section">
-                    <h3 style="margin-bottom: 16px; font-size: 1rem; color: var(--text-dark);">🏦 Préstamos y Créditos</h3>
-                    <div id="deudaContainer"></div>
-                </div>
-
-                <div class="item-section">
-                    <h3 style="margin-bottom: 16px; font-size: 1rem; color: var(--text-dark);">📋 Gastos Fijos Mensuales</h3>
-                    <div id="gastosContainer"></div>
-                </div>
-
-                <div class="item-section">
-                    <h3 style="margin-bottom: 16px; font-size: 1rem; color: var(--text-dark);">👤 Gastos Personales</h3>
-                    <div id="gastosPsersonalesContainer"></div>
-                </div>
-
-                <div class="item-section">
-                    <h3 style="margin-bottom: 16px; font-size: 1rem; color: var(--text-dark);">✨ Egresos Esporádicos</h3>
-                    <div id="egresosEsporadicosContainer"></div>
-                    <button class="btn-add" onclick="abrirModalEgresoEsporadico()">+ Agregar Egreso Esporádico</button>
-                </div>
+                <h2 class="section-title">💸 Egresos - <span id="mesEgresos"></span></h2>
+                <div id="tablasEgresos"></div>
             </div>
 
             <!-- PLAN -->
@@ -545,73 +505,36 @@
         </div>
     </div>
 
-    <!-- MODALS -->
-    <div id="modalIngresoEsporadico" class="modal">
-        <div class="modal-content">
-            <h2 class="modal-title">+ Ingreso Esporádico</h2>
-            <div class="form-group">
-                <label>Nombre</label>
-                <input type="text" id="ingresoNombre" placeholder="Ej: Venta extra" class="input-field">
-            </div>
-            <div class="form-group">
-                <label>Monto</label>
-                <input type="number" id="ingresoMonto" placeholder="0.00" class="input-field">
-            </div>
-            <div class="form-group">
-                <label>Emoji</label>
-                <div class="emoji-picker" id="emojiPickerIngreso"></div>
-            </div>
-            <div style="display: flex; gap: 12px;">
-                <button class="btn btn-primary" style="flex: 1;" onclick="guardarIngresoEsporadico()">Guardar</button>
-                <button class="btn" style="flex: 1; background: #f0f0f0; color: var(--text-dark);" onclick="cerrarModal('modalIngresoEsporadico')">Cancelar</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="modalEgresoEsporadico" class="modal">
-        <div class="modal-content">
-            <h2 class="modal-title">+ Egreso Esporádico</h2>
-            <div class="form-group">
-                <label>Nombre</label>
-                <input type="text" id="egresoNombre" placeholder="Ej: Compra extra" class="input-field">
-            </div>
-            <div class="form-group">
-                <label>Monto</label>
-                <input type="number" id="egresoMonto" placeholder="0.00" class="input-field">
-            </div>
-            <div class="form-group">
-                <label>Tipo de Pago</label>
-                <select id="egresoTipo" class="input-field">
-                    <option value="normal">Normal</option>
-                    <option value="adelantado">Adelantado</option>
-                    <option value="parcial">Parcial</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Emoji</label>
-                <div class="emoji-picker" id="emojiPickerEgreso"></div>
-            </div>
-            <div style="display: flex; gap: 12px;">
-                <button class="btn btn-primary" style="flex: 1;" onclick="guardarEgresoEsporadico()">Guardar</button>
-                <button class="btn" style="flex: 1; background: #f0f0f0; color: var(--text-dark);" onclick="cerrarModal('modalEgresoEsporadico')">Cancelar</button>
-            </div>
-        </div>
-    </div>
-
     <script>
         const SUPABASE_URL = 'https://eebfdzyxgsejunphsyyi.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVlYmZkenl4Z3NlanVucGhzeXlpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5MDMxODksImV4cCI6MjA5MDQ3OTE4OX0.JHXM-otv5PVMwXhAPRJSex4_RS2yI76Vwx-oeBfRmX0';
         
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        const EMOJIS = ['💰', '💵', '💴', '💶', '💷', '🤑', '💸', '🏦', '💳', '🎁', '🛍️', '📈', '📊', '✅', '⭐', '🌟'];
+        const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
 
         let currentUser = null;
-        let mesActual = 'marzo-2026';
-        let emojiSelectedIngreso = '💵';
-        let emojiSelectedEgreso = '💸';
-        let datosIngresos = {};
-        let datosEgresos = {};
+        let mesActual = new Date(2026, 2, 1); // Marzo 2026
+        let datos = {};
+
+        function getMesKey() {
+            return MESES[mesActual.getMonth()] + '-' + mesActual.getFullYear();
+        }
+
+        function getMesNombre() {
+            const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+            return meses[mesActual.getMonth()] + ' ' + mesActual.getFullYear();
+        }
+
+        function mesAnterior() {
+            mesActual.setMonth(mesActual.getMonth() - 1);
+            cargarDatos();
+        }
+
+        function mesSiguiente() {
+            mesActual.setMonth(mesActual.getMonth() + 1);
+            cargarDatos();
+        }
 
         async function handleLogin(e) {
             e.preventDefault();
@@ -668,23 +591,28 @@
 
         async function cargarDatos() {
             try {
-                const { data: ingRecurrentes } = await supabase.from('ingresos_recurrentes_checks').select('*').eq('mes', mesActual);
-                datosIngresos.recurrentes = ingRecurrentes || [];
+                document.getElementById('loadingMessage').style.display = 'block';
+                document.getElementById('mesActual').textContent = getMesNombre();
+                document.getElementById('mesIngresos').textContent = getMesNombre();
+                document.getElementById('mesEgresos').textContent = getMesNombre();
 
-                const { data: ingEsporadicos } = await supabase.from('ingresos_esporadicos').select('*').eq('mes', mesActual);
-                datosIngresos.esporadicos = ingEsporadicos || [];
+                const mesKey = getMesKey();
 
-                const { data: pagosDeudas } = await supabase.from('pagos_deudas').select('*').eq('mes', mesActual);
-                datosEgresos.deudas = pagosDeudas || [];
+                const { data: ingRecurrentes } = await supabase.from('ingresos_recurrentes_checks').select('*').eq('mes', mesKey);
+                const { data: ingEsporadicos } = await supabase.from('ingresos_esporadicos').select('*').eq('mes', mesKey);
+                const { data: pagosDeudas } = await supabase.from('pagos_deudas').select('*').eq('mes', mesKey);
+                const { data: pagosGastos } = await supabase.from('pagos_gastos_fijos').select('*').eq('mes', mesKey);
+                const { data: gastosPersonales } = await supabase.from('gastos_personales').select('*').eq('mes', mesKey);
+                const { data: egresosEspo } = await supabase.from('egresos_esporadicos').select('*').eq('mes', mesKey);
 
-                const { data: pagosGastos } = await supabase.from('pagos_gastos_fijos').select('*').eq('mes', mesActual);
-                datosEgresos.gastos = pagosGastos || [];
-
-                const { data: gastosPersonales } = await supabase.from('gastos_personales').select('*').eq('mes', mesActual);
-                datosEgresos.personales = gastosPersonales || [];
-
-                const { data: egresosEspo } = await supabase.from('egresos_esporadicos').select('*').eq('mes', mesActual);
-                datosEgresos.esporadicos = egresosEspo || [];
+                datos = {
+                    ingRecurrentes: ingRecurrentes || [],
+                    ingEsporadicos: ingEsporadicos || [],
+                    pagosDeudas: pagosDeudas || [],
+                    pagosGastos: pagosGastos || [],
+                    gastosPersonales: gastosPersonales || [],
+                    egresosEspo: egresosEspo || []
+                };
 
                 document.getElementById('loadingMessage').style.display = 'none';
                 renderDashboard();
@@ -697,37 +625,33 @@
             }
         }
 
-        function calcularTotalesIngresos() {
-            // Solo los MARCADOS
-            const recurrentes = datosIngresos.recurrentes.filter(r => r.marcado).reduce((sum, r) => sum + r.monto, 0);
-            const esporadicos = datosIngresos.esporadicos.reduce((sum, e) => sum + e.monto, 0);
-            return { recurrentes, esporadicos, total: recurrentes + esporadicos };
-        }
-
-        function calcularTotalesEgresos() {
-            // Solo los PAGADOS
-            const fijos = datosEgresos.gastos.filter(g => g.monto_pagado > 0).reduce((sum, g) => sum + g.monto_pagado, 0);
-            const deudas = datosEgresos.deudas.filter(d => d.monto_pagado > 0).reduce((sum, d) => sum + d.monto_pagado, 0);
-            const personales = datosEgresos.personales.reduce((sum, p) => sum + p.monto, 0);
-            const esporadicos = datosEgresos.esporadicos.filter(e => e.monto_pagado > 0).reduce((sum, e) => sum + e.monto_pagado, 0);
-            return { fijos, deudas, personales, esporadicos, total: fijos + deudas + personales + esporadicos };
-        }
-
         function renderDashboard() {
-            const ingresos = calcularTotalesIngresos();
-            const egresos = calcularTotalesEgresos();
-            const disponible = ingresos.total - egresos.total;
+            const ingresosMarcados = datos.ingRecurrentes.filter(r => r.marcado).reduce((sum, r) => sum + r.monto, 0) + 
+                                     datos.ingEsporadicos.reduce((sum, e) => sum + e.monto, 0);
+            
+            const egresosPagados = datos.pagosGastos.reduce((sum, g) => sum + g.monto_pagado, 0) +
+                                   datos.pagosDeudas.reduce((sum, d) => sum + d.monto_pagado, 0) +
+                                   datos.gastosPersonales.reduce((sum, p) => sum + p.monto, 0) +
+                                   datos.egresosEspo.reduce((sum, e) => sum + e.monto_pagado, 0);
+
+            const disponible = ingresosMarcados - egresosPagados;
+
+            // Calcular lo que falta
+            const faltaIngresos = datos.ingRecurrentes.filter(r => !r.marcado).reduce((sum, r) => sum + r.monto, 0);
+            const faltaEgresos = datos.pagosGastos.filter(g => g.monto_pagado < g.monto_total).reduce((sum, g) => sum + (g.monto_total - g.monto_pagado), 0) +
+                                 datos.pagosDeudas.filter(d => d.monto_pagado < d.monto_total).reduce((sum, d) => sum + (d.monto_total - d.monto_pagado), 0) +
+                                 datos.egresosEspo.filter(e => e.monto_pagado < e.monto_total).reduce((sum, e) => sum + (e.monto_total - e.monto_pagado), 0);
 
             let html = `
                 <div class="card">
                     <div class="card-label">💵 Ingresos Registrados</div>
-                    <div class="card-value">$${ingresos.total.toFixed(2)}</div>
-                    <div class="card-subtitle">Marcados como completados</div>
+                    <div class="card-value">$${ingresosMarcados.toFixed(2)}</div>
+                    <div class="card-subtitle">Falta: $${faltaIngresos.toFixed(2)}</div>
                 </div>
                 <div class="card" style="border-top-color: #FFD6E8;">
                     <div class="card-label">💸 Egresos Pagados</div>
-                    <div class="card-value" style="color: #d63031;">$${egresos.total.toFixed(2)}</div>
-                    <div class="card-subtitle">Registrados como pagados</div>
+                    <div class="card-value" style="color: #d63031;">$${egresosPagados.toFixed(2)}</div>
+                    <div class="card-subtitle">Falta: $${faltaEgresos.toFixed(2)}</div>
                 </div>
                 <div class="card" style="border-top-color: #D6E8FF;">
                     <div class="card-label">💰 Balance</div>
@@ -736,131 +660,199 @@
                 </div>
             `;
             document.getElementById('dashboardCards').innerHTML = html;
+
+            // Qué falta pagar
+            let faltaHtml = '<div class="falta-pagar"><h3 style="color: #d63031; margin-bottom: 16px;">⚠️ QUÉ FALTA PAGAR ESTE MES</h3>';
+            
+            const faltaItems = [];
+
+            datos.ingRecurrentes.filter(r => !r.marcado).forEach(r => {
+                faltaItems.push({ nombre: '📌 ' + r.cliente_nombre + ' (Ingreso)', monto: r.monto, tipo: 'ingreso' });
+            });
+
+            datos.pagosGastos.filter(g => g.monto_pagado < g.monto_total).forEach(g => {
+                const falta = g.monto_total - g.monto_pagado;
+                faltaItems.push({ nombre: '📌 ' + g.gasto_nombre + ' (Gasto)', monto: falta, tipo: 'egreso' });
+            });
+
+            datos.pagosDeudas.filter(d => d.monto_pagado < d.monto_total).forEach(d => {
+                const falta = d.monto_total - d.monto_pagado;
+                faltaItems.push({ nombre: '📌 ' + d.deuda_nombre + ' (Deuda)', monto: falta, tipo: 'egreso' });
+            });
+
+            datos.egresosEspo.filter(e => e.monto_pagado < e.monto_total).forEach(e => {
+                const falta = e.monto_total - e.monto_pagado;
+                faltaItems.push({ nombre: '📌 ' + e.nombre + ' (Esporádico)', monto: falta, tipo: 'egreso' });
+            });
+
+            if (faltaItems.length === 0) {
+                faltaHtml += '<p style="color: var(--mint); font-weight: 600;">✅ ¡Todo pagado este mes!</p>';
+            } else {
+                faltaItems.forEach(item => {
+                    faltaHtml += `
+                        <div class="falta-item">
+                            <span class="falta-nombre">${item.nombre}</span>
+                            <span class="falta-monto">$${item.monto.toFixed(2)}</span>
+                        </div>
+                    `;
+                });
+            }
+
+            faltaHtml += '</div>';
+            document.getElementById('faltaPagarContainer').innerHTML = faltaHtml;
         }
 
         function renderIngresos() {
-            const totales = calcularTotalesIngresos();
-            document.getElementById('totalRecurrente').textContent = '$' + totales.recurrentes.toFixed(2);
-            document.getElementById('totalEsporadico').textContent = '$' + totales.esporadicos.toFixed(2);
-            document.getElementById('totalIngresos').textContent = '$' + totales.total.toFixed(2);
-
-            let html = '';
-            datosIngresos.recurrentes.forEach(cliente => {
+            let html = '<h3 style="margin-bottom: 20px; margin-top: 0;">Recurrentes por Compañía</h3>';
+            html += '<table><thead><tr><th>Compañía</th><th>Monto</th><th>Estado</th><th>Acción</th></tr></thead><tbody>';
+            
+            datos.ingRecurrentes.forEach(ing => {
                 html += `
-                    <div class="item-row">
-                        <input type="checkbox" class="checkbox" ${cliente.marcado ? 'checked' : ''} onchange="actualizarIngresoRecurrente(${cliente.id}, this.checked)">
-                        <div class="item-name">${cliente.cliente_nombre}</div>
-                        <div class="item-monto">$${cliente.monto}</div>
-                    </div>
+                    <tr>
+                        <td>${ing.cliente_nombre}</td>
+                        <td>$${ing.monto.toFixed(2)}</td>
+                        <td><span class="estado-badge ${ing.marcado ? 'estado-pagado' : 'estado-pendiente'}">${ing.marcado ? 'Registrado' : 'Pendiente'}</span></td>
+                        <td><input type="checkbox" ${ing.marcado ? 'checked' : ''} onchange="actualizarIngreso(${ing.id}, this.checked)" style="cursor: pointer; width: 20px;"></td>
+                    </tr>
                 `;
             });
-            document.getElementById('ingresosRecurrentesContainer').innerHTML = html;
 
-            html = '';
-            datosIngresos.esporadicos.forEach((ingreso) => {
+            html += '</tbody></table>';
+
+            html += '<h3 style="margin-bottom: 20px; margin-top: 30px;">Ingresos Esporádicos</h3>';
+            html += '<table><thead><tr><th>Nombre</th><th>Monto</th><th>Emoji</th></tr></thead><tbody>';
+            
+            datos.ingEsporadicos.forEach(ing => {
                 html += `
-                    <div class="item-row">
-                        <span style="text-align: center; font-size: 1.2rem;">${ingreso.emoji}</span>
-                        <div class="item-name">${ingreso.nombre}</div>
-                        <div class="item-monto">$${ingreso.monto}</div>
-                        <button class="btn btn-delete" onclick="eliminarIngresoEsporadico(${ingreso.id})">Eliminar</button>
-                    </div>
+                    <tr>
+                        <td>${ing.nombre}</td>
+                        <td>$${ing.monto.toFixed(2)}</td>
+                        <td>${ing.emoji}</td>
+                    </tr>
                 `;
             });
-            if (html === '') html = '<p style="color: var(--text-light); padding: 16px 0;">Sin ingresos esporádicos</p>';
-            document.getElementById('ingresosEsporadicosContainer').innerHTML = html;
+
+            html += '</tbody></table>';
+            document.getElementById('tablasIngresos').innerHTML = html;
         }
 
         function renderEgresos() {
-            const totales = calcularTotalesEgresos();
-            const totalFijosAll = datosEgresos.gastos.reduce((sum, g) => sum + g.monto_total, 0);
-            const totalDeudas = datosEgresos.deudas.reduce((sum, d) => sum + d.monto_total, 0);
-
-            document.getElementById('totalFijos').textContent = '$' + totales.fijos.toFixed(2);
-            document.getElementById('totalDeudas').textContent = '$' + totales.deudas.toFixed(2);
-            document.getElementById('totalPersonales').textContent = '$' + totales.personales.toFixed(2);
-            document.getElementById('totalEgresosEspo').textContent = '$' + totales.esporadicos.toFixed(2);
-            document.getElementById('totalEgresos').textContent = '$' + totales.total.toFixed(2);
-
-            // Deudas
-            let html = '';
-            datosEgresos.deudas.forEach(deuda => {
-                const falta = deuda.monto_total - deuda.monto_pagado;
+            let html = '<h3 style="margin-bottom: 20px; margin-top: 0;">Gastos Fijos Mensuales</h3>';
+            html += '<table><thead><tr><th>Concepto</th><th>Total</th><th>Pagado</th><th>Falta</th><th>Estado</th><th>Actualizar</th></tr></thead><tbody>';
+            
+            datos.pagosGastos.forEach(g => {
+                const falta = g.monto_total - g.monto_pagado;
                 html += `
-                    <div class="item-row">
-                        <input type="checkbox" class="checkbox" ${deuda.monto_pagado > 0 ? 'checked' : ''} onchange="marcarDeudaPagada(${deuda.id}, this.checked)">
-                        <div class="item-name">${deuda.deuda_nombre}<br><small style="color: var(--text-light); font-weight: normal;">Tipo: ${deuda.tipo}</small></div>
-                        <input type="number" value="${deuda.monto_pagado}" onchange="actualizarMontoPagadoDeuda(${deuda.id}, this.value)" class="input-field" style="grid-column: 3;">
-                        <div class="item-monto">$${falta.toFixed(2)}</div>
-                    </div>
+                    <tr>
+                        <td>${g.gasto_nombre}</td>
+                        <td>$${g.monto_total.toFixed(2)}</td>
+                        <td><input type="number" value="${g.monto_pagado}" onchange="actualizarGasto(${g.id}, this.value)" style="width: 80px;"></td>
+                        <td style="color: ${falta > 0 ? '#d63031' : 'var(--mint)'}; font-weight: 600;">$${falta.toFixed(2)}</td>
+                        <td>
+                            <select onchange="cambiarEstadoGasto(${g.id}, this.value)" style="width: 100px;">
+                                <option value="pendiente" ${g.monto_pagado === 0 ? 'selected' : ''}>Pendiente</option>
+                                <option value="parcial" ${g.monto_pagado > 0 && g.monto_pagado < g.monto_total ? 'selected' : ''}>Parcial</option>
+                                <option value="pagado" ${g.monto_pagado >= g.monto_total ? 'selected' : ''}>Pagado</option>
+                            </select>
+                        </td>
+                        <td><button class="btn" style="background: var(--mint-light); color: white; padding: 6px 12px; font-size: 0.85rem;" onclick="marcarGastoPagado(${g.id}, ${g.monto_total})">Marcar</button></td>
+                    </tr>
                 `;
             });
-            document.getElementById('deudaContainer').innerHTML = html;
 
-            // Gastos fijos
-            html = '';
-            datosEgresos.gastos.forEach(gasto => {
-                const falta = gasto.monto_total - gasto.monto_pagado;
+            html += '</tbody></table>';
+
+            html += '<h3 style="margin-bottom: 20px; margin-top: 30px;">Préstamos y Créditos</h3>';
+            html += '<table><thead><tr><th>Deuda</th><th>Total</th><th>Pagado</th><th>Falta</th><th>Tipo</th><th>Actualizar</th></tr></thead><tbody>';
+            
+            datos.pagosDeudas.forEach(d => {
+                const falta = d.monto_total - d.monto_pagado;
                 html += `
-                    <div class="item-row">
-                        <input type="checkbox" class="checkbox" ${gasto.monto_pagado > 0 ? 'checked' : ''} onchange="marcarGastoPagado(${gasto.id}, this.checked)">
-                        <div class="item-name">${gasto.gasto_nombre}</div>
-                        <input type="number" value="${gasto.monto_pagado}" onchange="actualizarMontoGasto(${gasto.id}, this.value)" class="input-field" style="grid-column: 3;">
-                        <div class="item-monto">$${falta.toFixed(2)}</div>
-                    </div>
+                    <tr>
+                        <td>${d.deuda_nombre}</td>
+                        <td>$${d.monto_total.toFixed(2)}</td>
+                        <td><input type="number" value="${d.monto_pagado}" onchange="actualizarDeuda(${d.id}, this.value)" style="width: 80px;"></td>
+                        <td style="color: ${falta > 0 ? '#d63031' : 'var(--mint)'}; font-weight: 600;">$${falta.toFixed(2)}</td>
+                        <td>
+                            <select onchange="cambiarTipoDeuda(${d.id}, this.value)" style="width: 100px;">
+                                <option value="normal" ${d.tipo === 'normal' ? 'selected' : ''}>Normal</option>
+                                <option value="adelantado" ${d.tipo === 'adelantado' ? 'selected' : ''}>Adelantado</option>
+                                <option value="parcial" ${d.tipo === 'parcial' ? 'selected' : ''}>Parcial</option>
+                            </select>
+                        </td>
+                        <td><button class="btn" style="background: var(--mint-light); color: white; padding: 6px 12px; font-size: 0.85rem;" onclick="marcarDeudaPagada(${d.id}, ${d.monto_total})">Marcar</button></td>
+                    </tr>
                 `;
             });
-            document.getElementById('gastosContainer').innerHTML = html;
 
-            // Gastos personales
-            html = '';
-            datosEgresos.personales.forEach((gasto) => {
+            html += '</tbody></table>';
+
+            html += '<h3 style="margin-bottom: 20px; margin-top: 30px;">Gastos Personales</h3>';
+            html += '<table><thead><tr><th>Tipo</th><th>Monto</th></tr></thead><tbody>';
+            
+            datos.gastosPersonales.forEach(p => {
                 html += `
-                    <div class="item-row">
-                        <span style="text-align: center; font-size: 1.2rem;">${gasto.emoji}</span>
-                        <div class="item-name">${gasto.tipo_nombre}</div>
-                        <input type="number" placeholder="$0" value="${gasto.monto}" class="input-field" onchange="actualizarGastoPersonal(${gasto.id}, this.value)" style="grid-column: 3;">
-                    </div>
+                    <tr>
+                        <td>${p.emoji} ${p.tipo_nombre}</td>
+                        <td><input type="number" value="${p.monto}" onchange="actualizarGastoPersonal(${p.id}, this.value)" style="width: 100px;"></td>
+                    </tr>
                 `;
             });
-            document.getElementById('gastosPsersonalesContainer').innerHTML = html;
 
-            // Egresos esporádicos
-            html = '';
-            datosEgresos.esporadicos.forEach((egreso) => {
-                const falta = egreso.monto_total - egreso.monto_pagado;
+            html += '</tbody></table>';
+
+            html += '<h3 style="margin-bottom: 20px; margin-top: 30px;">Egresos Esporádicos</h3>';
+            html += '<table><thead><tr><th>Concepto</th><th>Total</th><th>Pagado</th><th>Falta</th><th>Tipo</th><th>Actualizar</th></tr></thead><tbody>';
+            
+            datos.egresosEspo.forEach(e => {
+                const falta = e.monto_total - e.monto_pagado;
                 html += `
-                    <div class="item-row">
-                        <input type="checkbox" class="checkbox" ${egreso.monto_pagado > 0 ? 'checked' : ''} onchange="marcarEgresoPagado(${egreso.id}, this.checked)">
-                        <div class="item-name">${egreso.emoji} ${egreso.nombre}</div>
-                        <input type="number" value="${egreso.monto_pagado}" onchange="actualizarMontoPagadoEgreso(${egreso.id}, this.value)" class="input-field" style="grid-column: 3;">
-                        <div class="item-monto">$${falta.toFixed(2)}</div>
-                    </div>
+                    <tr>
+                        <td>${e.emoji} ${e.nombre}</td>
+                        <td>$${e.monto_total.toFixed(2)}</td>
+                        <td><input type="number" value="${e.monto_pagado}" onchange="actualizarEgreso(${e.id}, this.value)" style="width: 80px;"></td>
+                        <td style="color: ${falta > 0 ? '#d63031' : 'var(--mint)'}; font-weight: 600;">$${falta.toFixed(2)}</td>
+                        <td>
+                            <select onchange="cambiarTipoEgreso(${e.id}, this.value)" style="width: 100px;">
+                                <option value="normal" ${e.tipo === 'normal' ? 'selected' : ''}>Normal</option>
+                                <option value="adelantado" ${e.tipo === 'adelantado' ? 'selected' : ''}>Adelantado</option>
+                                <option value="parcial" ${e.tipo === 'parcial' ? 'selected' : ''}>Parcial</option>
+                            </select>
+                        </td>
+                        <td><button class="btn" style="background: var(--mint-light); color: white; padding: 6px 12px; font-size: 0.85rem;" onclick="marcarEgresoPagado(${e.id}, ${e.monto_total})">Marcar</button></td>
+                    </tr>
                 `;
             });
-            if (html === '') html = '<p style="color: var(--text-light); padding: 16px 0;">Sin egresos esporádicos</p>';
-            document.getElementById('egresosEsporadicosContainer').innerHTML = html;
+
+            html += '</tbody></table>';
+            document.getElementById('tablasEgresos').innerHTML = html;
         }
 
         function renderPlan() {
-            const ingresos = calcularTotalesIngresos();
-            const egresos = calcularTotalesEgresos();
-            const disponible = ingresos.total - egresos.total;
+            const ingresosMarcados = datos.ingRecurrentes.filter(r => r.marcado).reduce((sum, r) => sum + r.monto, 0) + 
+                                     datos.ingEsporadicos.reduce((sum, e) => sum + e.monto, 0);
+            
+            const egresosPagados = datos.pagosGastos.reduce((sum, g) => sum + g.monto_pagado, 0) +
+                                   datos.pagosDeudas.reduce((sum, d) => sum + d.monto_pagado, 0) +
+                                   datos.gastosPersonales.reduce((sum, p) => sum + p.monto, 0) +
+                                   datos.egresosEspo.reduce((sum, e) => sum + e.monto_pagado, 0);
+
+            const disponible = ingresosMarcados - egresosPagados;
 
             const html = `
                 <div class="card">
-                    <div class="summary-box">
-                        <div class="summary-row">
-                            <span class="summary-label">Total Ingresos (Registrados)</span>
-                            <span class="summary-value">$${ingresos.total.toFixed(2)}</span>
+                    <div style="padding: 20px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                            <span style="color: var(--text-light);">Ingresos Registrados</span>
+                            <strong>$${ingresosMarcados.toFixed(2)}</strong>
                         </div>
-                        <div class="summary-row">
-                            <span class="summary-label">Total Egresos (Pagados)</span>
-                            <span class="summary-value">$${egresos.total.toFixed(2)}</span>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                            <span style="color: var(--text-light);">Egresos Pagados</span>
+                            <strong>$${egresosPagados.toFixed(2)}</strong>
                         </div>
-                        <div class="summary-row" style="border-bottom: 2px solid var(--mint) !important; padding-top: 12px !important; margin-top: 12px !important;">
-                            <span class="summary-label" style="font-weight: 700; color: var(--mint);">DISPONIBLE</span>
-                            <span class="summary-value" style="color: var(--mint); font-size: 1.1rem;">$${disponible.toFixed(2)}</span>
+                        <div style="border-top: 2px solid var(--mint); padding-top: 16px; display: flex; justify-content: space-between;">
+                            <span style="font-weight: 700; color: var(--mint);">DISPONIBLE</span>
+                            <strong style="color: var(--mint); font-size: 1.3rem;">$${disponible.toFixed(2)}</strong>
                         </div>
                     </div>
                 </div>
@@ -872,59 +864,51 @@
             const html = `
                 <div class="card" style="border-top-color: #FFF4D6;">
                     <div style="line-height: 1.8;">
-                        <p style="margin-bottom: 12px;">📌 <strong>Cómo usar la app:</strong></p>
-                        <p style="margin-bottom: 12px;">✅ Marca el <strong>check</strong> cuando hayas recibido el ingreso</p>
-                        <p style="margin-bottom: 12px;">✅ Marca el <strong>check</strong> cuando hayas pagado el egreso</p>
-                        <p style="margin-bottom: 12px;">✅ Si es <strong>pago parcial</strong>, ingresa cuánto pagaste</p>
-                        <p style="margin-bottom: 12px;">✅ Los totales se actualizan <strong>automáticamente</strong></p>
+                        <p style="margin-bottom: 12px;">📌 <strong>Cómo usar:</strong></p>
+                        <p style="margin-bottom: 12px;">✅ Ingresa el monto pagado en cada campo</p>
+                        <p style="margin-bottom: 12px;">✅ Selecciona el tipo de pago (Normal, Parcial, Adelantado)</p>
+                        <p style="margin-bottom: 12px;">✅ O usa "Marcar" para marcar como pagado completamente</p>
+                        <p style="margin-bottom: 12px;">✅ El dashboard muestra todo lo que falta por pagar</p>
                     </div>
                 </div>
             `;
             document.getElementById('coachContainer').innerHTML = html;
         }
 
-        // FUNCIONES DE ACTUALIZACIÓN
-        async function actualizarIngresoRecurrente(id, marcado) {
+        async function actualizarIngreso(id, marcado) {
             await supabase.from('ingresos_recurrentes_checks').update({ marcado }).eq('id', id);
             cargarDatos();
         }
 
-        async function marcarDeudaPagada(id, marcado) {
-            const egreso = datosEgresos.deudas.find(d => d.id === id);
-            const montoPagado = marcado ? egreso.monto_total : 0;
-            await supabase.from('pagos_deudas').update({ monto_pagado: montoPagado }).eq('id', id);
-            cargarDatos();
-        }
-
-        async function actualizarMontoPagadoDeuda(id, monto) {
-            const montoPagado = parseFloat(monto) || 0;
-            await supabase.from('pagos_deudas').update({ monto_pagado: montoPagado }).eq('id', id);
-            cargarDatos();
-        }
-
-        async function marcarGastoPagado(id, marcado) {
-            const gasto = datosEgresos.gastos.find(g => g.id === id);
-            const montoPagado = marcado ? gasto.monto_total : 0;
-            await supabase.from('pagos_gastos_fijos').update({ monto_pagado: montoPagado }).eq('id', id);
-            cargarDatos();
-        }
-
-        async function actualizarMontoGasto(id, monto) {
+        async function actualizarGasto(id, monto) {
             const montoPagado = parseFloat(monto) || 0;
             await supabase.from('pagos_gastos_fijos').update({ monto_pagado: montoPagado }).eq('id', id);
             cargarDatos();
         }
 
-        async function marcarEgresoPagado(id, marcado) {
-            const egreso = datosEgresos.esporadicos.find(e => e.id === id);
-            const montoPagado = marcado ? egreso.monto_total : 0;
-            await supabase.from('egresos_esporadicos').update({ monto_pagado: montoPagado }).eq('id', id);
+        async function cambiarEstadoGasto(id, estado) {
+            await supabase.from('pagos_gastos_fijos').update({ estado }).eq('id', id);
             cargarDatos();
         }
 
-        async function actualizarMontoPagadoEgreso(id, monto) {
+        async function marcarGastoPagado(id, monto) {
+            await supabase.from('pagos_gastos_fijos').update({ monto_pagado: monto, estado: 'pagado' }).eq('id', id);
+            cargarDatos();
+        }
+
+        async function actualizarDeuda(id, monto) {
             const montoPagado = parseFloat(monto) || 0;
-            await supabase.from('egresos_esporadicos').update({ monto_pagado: montoPagado }).eq('id', id);
+            await supabase.from('pagos_deudas').update({ monto_pagado: montoPagado }).eq('id', id);
+            cargarDatos();
+        }
+
+        async function cambiarTipoDeuda(id, tipo) {
+            await supabase.from('pagos_deudas').update({ tipo }).eq('id', id);
+            cargarDatos();
+        }
+
+        async function marcarDeudaPagada(id, monto) {
+            await supabase.from('pagos_deudas').update({ monto_pagado: monto }).eq('id', id);
             cargarDatos();
         }
 
@@ -934,118 +918,20 @@
             cargarDatos();
         }
 
-        // MODALS
-        function initEmojiPickersInModal() {
-            const containerIngreso = document.getElementById('emojiPickerIngreso');
-            const containerEgreso = document.getElementById('emojiPickerEgreso');
-            
-            containerIngreso.innerHTML = '';
-            containerEgreso.innerHTML = '';
-            
-            EMOJIS.forEach(emoji => {
-                const btnIngreso = document.createElement('button');
-                btnIngreso.className = 'emoji-btn' + (emoji === emojiSelectedIngreso ? ' selected' : '');
-                btnIngreso.textContent = emoji;
-                btnIngreso.type = 'button';
-                btnIngreso.onclick = () => {
-                    document.querySelectorAll('#emojiPickerIngreso .emoji-btn').forEach(b => b.classList.remove('selected'));
-                    btnIngreso.classList.add('selected');
-                    emojiSelectedIngreso = emoji;
-                };
-                containerIngreso.appendChild(btnIngreso);
-
-                const btnEgreso = document.createElement('button');
-                btnEgreso.className = 'emoji-btn' + (emoji === emojiSelectedEgreso ? ' selected' : '');
-                btnEgreso.textContent = emoji;
-                btnEgreso.type = 'button';
-                btnEgreso.onclick = () => {
-                    document.querySelectorAll('#emojiPickerEgreso .emoji-btn').forEach(b => b.classList.remove('selected'));
-                    btnEgreso.classList.add('selected');
-                    emojiSelectedEgreso = emoji;
-                };
-                containerEgreso.appendChild(btnEgreso);
-            });
+        async function actualizarEgreso(id, monto) {
+            const montoPagado = parseFloat(monto) || 0;
+            await supabase.from('egresos_esporadicos').update({ monto_pagado: montoPagado }).eq('id', id);
+            cargarDatos();
         }
 
-        function abrirModalIngresoEsporadico() {
-            emojiSelectedIngreso = '💵';
-            document.getElementById('ingresoNombre').value = '';
-            document.getElementById('ingresoMonto').value = '';
-            initEmojiPickersInModal();
-            document.getElementById('modalIngresoEsporadico').classList.add('active');
+        async function cambiarTipoEgreso(id, tipo) {
+            await supabase.from('egresos_esporadicos').update({ tipo }).eq('id', id);
+            cargarDatos();
         }
 
-        function abrirModalEgresoEsporadico() {
-            emojiSelectedEgreso = '💸';
-            document.getElementById('egresoNombre').value = '';
-            document.getElementById('egresoMonto').value = '';
-            document.getElementById('egresoTipo').value = 'normal';
-            initEmojiPickersInModal();
-            document.getElementById('modalEgresoEsporadico').classList.add('active');
-        }
-
-        function cerrarModal(id) {
-            document.getElementById(id).classList.remove('active');
-        }
-
-        async function guardarIngresoEsporadico() {
-            const nombre = document.getElementById('ingresoNombre').value;
-            const monto = parseFloat(document.getElementById('ingresoMonto').value) || 0;
-
-            if (!nombre || monto <= 0) {
-                alert('Completa los campos correctamente');
-                return;
-            }
-
-            try {
-                await supabase.from('ingresos_esporadicos').insert({
-                    nombre,
-                    monto,
-                    emoji: emojiSelectedIngreso,
-                    mes: mesActual
-                });
-                cerrarModal('modalIngresoEsporadico');
-                cargarDatos();
-            } catch (error) {
-                alert('Error: ' + error.message);
-            }
-        }
-
-        async function guardarEgresoEsporadico() {
-            const nombre = document.getElementById('egresoNombre').value;
-            const monto = parseFloat(document.getElementById('egresoMonto').value) || 0;
-            const tipo = document.getElementById('egresoTipo').value;
-
-            if (!nombre || monto <= 0) {
-                alert('Completa los campos correctamente');
-                return;
-            }
-
-            try {
-                await supabase.from('egresos_esporadicos').insert({
-                    nombre,
-                    monto_total: monto,
-                    emoji: emojiSelectedEgreso,
-                    tipo,
-                    estado: 'pendiente',
-                    monto_pagado: 0,
-                    mes: mesActual
-                });
-                cerrarModal('modalEgresoEsporadico');
-                cargarDatos();
-            } catch (error) {
-                alert('Error: ' + error.message);
-            }
-        }
-
-        async function eliminarIngresoEsporadico(id) {
-            if (!confirm('¿Eliminar este ingreso?')) return;
-            try {
-                await supabase.from('ingresos_esporadicos').delete().eq('id', id);
-                cargarDatos();
-            } catch (error) {
-                alert('Error: ' + error.message);
-            }
+        async function marcarEgresoPagado(id, monto) {
+            await supabase.from('egresos_esporadicos').update({ monto_pagado: monto, estado: 'pagado' }).eq('id', id);
+            cargarDatos();
         }
 
         // Init
@@ -1061,14 +947,6 @@
                 document.getElementById('appScreen').style.display = 'none';
                 document.getElementById('loginScreen').style.display = 'flex';
             }
-        });
-
-        document.querySelectorAll('.modal').forEach(modal => {
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    modal.classList.remove('active');
-                }
-            });
         });
     </script>
 </body>
