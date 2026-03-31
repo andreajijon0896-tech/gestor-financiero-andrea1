@@ -15,19 +15,15 @@
             color: #2d3436;
         }
 
-        /* PALETA PASTEL */
         :root {
-            --pastel-pink: #FFD6E8;
-            --pastel-blue: #D6E8FF;
-            --pastel-green: #D6F5E8;
-            --pastel-yellow: #FFF4D6;
-            --pastel-purple: #E8D6FF;
-            --mint: #5ECE9F;
-            --mint-dark: #3CB878;
+            --mint: #3CB878;
+            --mint-light: #5ECE9F;
             --text-dark: #2d3436;
             --text-light: #636e72;
             --bg-light: #fafafa;
             --white: #ffffff;
+            --pink: #FFD6E8;
+            --blue: #D6E8FF;
         }
 
         .login-container {
@@ -91,7 +87,7 @@
         .login-button {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, var(--mint) 0%, var(--mint-dark) 100%);
+            background: linear-gradient(135deg, var(--mint-light) 0%, var(--mint) 100%);
             color: white;
             border: none;
             border-radius: 10px;
@@ -107,7 +103,7 @@
         }
 
         .login-error {
-            background: #FFD6E8;
+            background: var(--pink);
             color: #d63031;
             padding: 12px;
             border-radius: 10px;
@@ -157,51 +153,11 @@
             background: var(--bg-light);
         }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
-        }
-
         .header-title {
             font-size: 1.8rem;
             font-weight: 700;
             color: var(--text-dark);
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 12px;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--mint) 0%, var(--mint-dark) 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(94, 206, 159, 0.3);
-        }
-
-        .btn-logout {
-            background: #FFD6E8;
-            color: #d63031;
-        }
-
-        .btn-logout:hover {
-            background: #FFC4D6;
+            margin-bottom: 40px;
         }
 
         .section {
@@ -224,12 +180,8 @@
             padding: 28px;
             border-radius: 16px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-            border-top: 4px solid;
+            border-top: 4px solid var(--mint-light);
         }
-
-        .card.income { border-top-color: var(--pastel-green); }
-        .card.expense { border-top-color: var(--pastel-pink); }
-        .card.balance { border-top-color: var(--pastel-blue); }
 
         .card-label {
             font-size: 0.9rem;
@@ -280,117 +232,7 @@
             font-weight: 700;
             color: var(--text-dark);
             margin-bottom: 20px;
-            margin-top: 20px;
-        }
-
-        .item-row {
-            background: white;
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 12px;
-            display: grid;
-            grid-template-columns: auto 1fr 100px 100px auto;
-            gap: 16px;
-            align-items: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        }
-
-        .checkbox {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-        }
-
-        .item-name {
-            font-weight: 500;
-            color: var(--text-dark);
-        }
-
-        .input-field {
-            padding: 8px 12px;
-            border: 1px solid #e8e8e8;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-family: inherit;
-        }
-
-        .input-field:focus {
-            outline: none;
-            border-color: var(--mint);
-            background: #fafafa;
-        }
-
-        .btn-small {
-            padding: 8px 12px;
-            background: #FFD6E8;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: #d63031;
-        }
-
-        .btn-small:hover {
-            background: #FFC4D6;
-        }
-
-        .add-btn {
-            background: linear-gradient(135deg, var(--mint) 0%, var(--mint-dark) 100%);
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            margin-top: 12px;
-            width: 100%;
-            transition: all 0.3s;
-        }
-
-        .add-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(94, 206, 159, 0.3);
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: #f0f0f0;
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 12px 0;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--mint) 0%, var(--mint-dark) 100%);
-            transition: width 0.3s;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-light);
-        }
-
-        .error-msg {
-            background: #FFD6E8;
-            color: #d63031;
-            padding: 16px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-
-        .esporadicos-list {
-            background: white;
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 12px;
-            display: grid;
-            grid-template-columns: 1fr 100px 100px auto;
-            gap: 12px;
-            align-items: center;
+            margin-top: 30px;
         }
 
         .summary-box {
@@ -404,12 +246,137 @@
         .summary-row {
             display: flex;
             justify-content: space-between;
-            padding: 8px 0;
+            padding: 12px 0;
             border-bottom: 1px solid #f0f0f0;
         }
 
         .summary-row:last-child {
             border-bottom: none;
+        }
+
+        .summary-label {
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .summary-value {
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .item-section {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .item-row {
+            display: grid;
+            grid-template-columns: auto 2fr 1fr 1fr auto;
+            gap: 16px;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .item-row:last-child {
+            border-bottom: none;
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--mint);
+        }
+
+        .item-name {
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .item-monto {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--mint-light) 0%, var(--mint) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(94, 206, 159, 0.3);
+        }
+
+        .btn-logout {
+            background: var(--pink);
+            color: #d63031;
+        }
+
+        .btn-logout:hover {
+            background: #FFC4D6;
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, var(--mint-light) 0%, var(--mint) 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 16px;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(94, 206, 159, 0.3);
+        }
+
+        .btn-delete {
+            background: var(--pink);
+            color: #d63031;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+        }
+
+        .btn-delete:hover {
+            background: #FFC4D6;
+        }
+
+        .input-field {
+            padding: 8px 12px;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: inherit;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--mint);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
         }
 
         @media (max-width: 768px) {
@@ -421,12 +388,6 @@
                 padding: 20px;
                 border-right: none;
                 border-bottom: 1px solid #f0f0f0;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-            .dashboard {
-                grid-template-columns: 1fr;
             }
             .item-row {
                 grid-template-columns: auto 1fr;
@@ -468,11 +429,7 @@
         </div>
 
         <div class="main-content">
-            <div class="header">
-                <div>
-                    <h1 class="header-title">Gestor Financiero</h1>
-                </div>
-            </div>
+            <h1 class="header-title">Gestor Financiero</h1>
 
             <div id="loadingMessage" class="loading">Cargando...</div>
 
@@ -493,47 +450,93 @@
 
             <!-- INGRESOS -->
             <div id="section-ingresos" class="section">
-                <div class="chart-container">
-                    <div class="chart-title">📊 Resumen de Ingresos</div>
-                    <canvas id="ingressosChart" class="chart-canvas"></canvas>
+                <h2 class="section-title">💵 Ingresos</h2>
+                
+                <div class="summary-box">
+                    <div class="summary-row">
+                        <span class="summary-label">Ingresos Recurrentes</span>
+                        <span class="summary-value" id="totalRecurrente">$0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">Ingresos Esporádicos</span>
+                        <span class="summary-value" id="totalEsporadico">$0</span>
+                    </div>
+                    <div class="summary-row" style="border-bottom: 2px solid var(--mint) !important; padding-top: 12px !important; margin-top: 12px !important;">
+                        <span style="font-weight: 700; color: var(--mint);">TOTAL INGRESOS</span>
+                        <span class="summary-value" style="color: var(--mint); font-size: 1.1rem;" id="totalIngresos">$0</span>
+                    </div>
                 </div>
-                
-                <h2 class="section-title">Ingresos Recurrentes</h2>
-                <div id="ingressosRecurrentesContainer"></div>
-                
-                <h2 class="section-title">Ingresos Esporádicos</h2>
-                <div id="ingressosEsporadicosContainer"></div>
+
+                <div class="item-section">
+                    <h3 style="margin-bottom: 16px; font-size: 1rem; color: var(--text-dark);">📊 Recurrentes por Compañía</h3>
+                    <div id="ingresosRecurrentesContainer"></div>
+                </div>
+
+                <div class="item-section">
+                    <h3 style="margin-bottom: 16px; font-size: 1rem; color: var(--text-dark);">✨ Esporádicos</h3>
+                    <div id="ingresosEsporadicosContainer"></div>
+                    <button class="btn-add" onclick="agregarIngresoEsporadico()">+ Agregar Ingreso Esporádico</button>
+                </div>
             </div>
 
             <!-- EGRESOS -->
             <div id="section-egresos" class="section">
-                <div class="chart-container">
-                    <div class="chart-title">📊 Resumen de Egresos</div>
-                    <canvas id="egresosChart" class="chart-canvas"></canvas>
+                <h2 class="section-title">💸 Egresos</h2>
+                
+                <div class="summary-box">
+                    <div class="summary-row">
+                        <span class="summary-label">Gastos Fijos</span>
+                        <span class="summary-value" id="totalFijos">$0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">Cuotas Deudas</span>
+                        <span class="summary-value" id="totalDeudas">$0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">Gastos Personales</span>
+                        <span class="summary-value" id="totalPersonales">$0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">Egresos Esporádicos</span>
+                        <span class="summary-value" id="totalEgresosEspo">$0</span>
+                    </div>
+                    <div class="summary-row" style="border-bottom: 2px solid #d63031 !important; padding-top: 12px !important; margin-top: 12px !important;">
+                        <span style="font-weight: 700; color: #d63031;">TOTAL EGRESOS</span>
+                        <span class="summary-value" style="color: #d63031; font-size: 1.1rem;" id="totalEgresos">$0</span>
+                    </div>
                 </div>
 
-                <h2 class="section-title">Préstamos y Créditos</h2>
-                <div id="deudaContainer"></div>
-                
-                <h2 class="section-title">Gastos Mensuales</h2>
-                <div id="gastosContainer"></div>
-                
-                <h2 class="section-title">Gastos Personales</h2>
-                <div id="gastosPsersonalesContainer"></div>
-                
-                <h2 class="section-title">Egresos Esporádicos</h2>
-                <div id="egresosEsporadicosContainer"></div>
+                <div class="item-section">
+                    <h3 style="margin-bottom: 16px; font-size: 1rem; color: var(--text-dark);">🏦 Préstamos y Créditos</h3>
+                    <div id="deudaContainer"></div>
+                </div>
+
+                <div class="item-section">
+                    <h3 style="margin-bottom: 16px; font-size: 1rem; color: var(--text-dark);">📋 Gastos Fijos Mensuales</h3>
+                    <div id="gastosContainer"></div>
+                </div>
+
+                <div class="item-section">
+                    <h3 style="margin-bottom: 16px; font-size: 1rem; color: var(--text-dark);">👤 Gastos Personales</h3>
+                    <div id="gastosPsersonalesContainer"></div>
+                </div>
+
+                <div class="item-section">
+                    <h3 style="margin-bottom: 16px; font-size: 1rem; color: var(--text-dark);">✨ Egresos Esporádicos</h3>
+                    <div id="egresosEsporadicosContainer"></div>
+                    <button class="btn-add" onclick="agregarEgresoEsporadico()">+ Agregar Egreso Esporádico</button>
+                </div>
             </div>
 
             <!-- PLAN -->
             <div id="section-plan" class="section">
-                <h2 class="section-title">Plan Financiero</h2>
+                <h2 class="section-title">📋 Plan Financiero</h2>
                 <div id="planContainer"></div>
             </div>
 
             <!-- COACH -->
             <div id="section-coach" class="section">
-                <h2 class="section-title">Coach Financiero</h2>
+                <h2 class="section-title">🎯 Coach Financiero</h2>
                 <div id="coachContainer"></div>
             </div>
         </div>
@@ -545,8 +548,6 @@
         
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
-        
         const CLIENTES_RECURRENTES = [
             { id: 'theone', nombre: 'TheOne Tecnología', monto: 400 },
             { id: 'robinson', nombre: 'Robinson', monto: 140 },
@@ -555,12 +556,12 @@
         ];
 
         const DEUDAS = [
-            { id: 1, nombre: 'BBVA', monto: 8000, cuota: 220, color: '#5ECE9F' },
-            { id: 2, nombre: 'Cop PJV', monto: 1700, cuota: 115, color: '#3CB878' },
-            { id: 3, nombre: 'Pycca', monto: 1400, cuota: 134, color: '#D6E8FF' },
-            { id: 4, nombre: 'Credifav', monto: 500, cuota: 110, color: '#FFD6E8' },
-            { id: 5, nombre: 'Tarjeta Crédito', monto: 1600, cuota: 120, color: '#FFF4D6' },
-            { id: 6, nombre: 'Contifico', monto: 270, cuota: 270, color: '#E8D6FF' }
+            { id: 1, nombre: 'BBVA', monto: 8000, cuota: 220 },
+            { id: 2, nombre: 'Cop PJV', monto: 1700, cuota: 115 },
+            { id: 3, nombre: 'Pycca', monto: 1400, cuota: 134 },
+            { id: 4, nombre: 'Credifav', monto: 500, cuota: 110 },
+            { id: 5, nombre: 'Tarjeta Crédito', monto: 1600, cuota: 120 },
+            { id: 6, nombre: 'Contifico', monto: 270, cuota: 270 }
         ];
 
         const GASTOS_FIJOS = [
@@ -588,7 +589,6 @@
             { id: 'terapia', nombre: 'Terapia Física', icono: '🏃' }
         ];
 
-        let mesActual = new Date(2026, 2, 1);
         let currentUser = null;
         let ingresosEsporadicos = JSON.parse(localStorage.getItem('ingresosEsporadicos')) || [];
         let egresosEsporadicos = JSON.parse(localStorage.getItem('egresosEsporadicos')) || [];
@@ -649,8 +649,6 @@
             event.target.closest('.nav-item').classList.add('active');
         }
 
-        function getMesKey() { return MESES[mesActual.getMonth()] + '-2026'; }
-
         async function cargarDatos() {
             try {
                 document.getElementById('loadingMessage').style.display = 'none';
@@ -676,24 +674,21 @@
             const egresos = egresoFijo + egresoDeuda + egresoEsporadico + egresosPersonales;
 
             const disponible = ingresos - egresos;
-            const ahorrosTotal = 2500;
-            const deudaPagada = 1200;
-            const deudaTotal = DEUDAS.reduce((sum, d) => sum + d.monto, 0);
 
             let html = `
-                <div class="card income">
+                <div class="card">
                     <div class="card-label">💵 Ingresos</div>
                     <div class="card-value">$${ingresos.toFixed(2)}</div>
                     <div class="card-subtitle">Este mes</div>
                 </div>
-                <div class="card expense">
+                <div class="card" style="border-top-color: #FFD6E8;">
                     <div class="card-label">💸 Egresos</div>
-                    <div class="card-value">$${egresos.toFixed(2)}</div>
+                    <div class="card-value" style="color: #d63031;">$${egresos.toFixed(2)}</div>
                     <div class="card-subtitle">Presupuestado</div>
                 </div>
-                <div class="card balance">
+                <div class="card" style="border-top-color: #D6E8FF;">
                     <div class="card-label">💰 Disponible</div>
-                    <div class="card-value" style="color: ${disponible >= 0 ? '#3CB878' : '#d63031'};">$${disponible.toFixed(2)}</div>
+                    <div class="card-value" style="color: ${disponible >= 0 ? 'var(--mint)' : '#d63031'};">$${disponible.toFixed(2)}</div>
                     <div class="card-subtitle">Para ahorrar</div>
                 </div>
             `;
@@ -744,199 +739,109 @@
                     }
                 });
             }
-
-            // Chart de ingresos
-            const ingressosCtx = document.getElementById('ingressosChart');
-            if (ingressosCtx) {
-                const ingresoRecurrente = CLIENTES_RECURRENTES.reduce((sum, c) => sum + c.monto, 0);
-                const ingresoEsporadico = ingresosEsporadicos.reduce((sum, i) => sum + i.monto, 0);
-                
-                new Chart(ingressosCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Ingresos Recurrentes', 'Ingresos Esporádicos', 'Total'],
-                        datasets: [{
-                            label: 'Monto',
-                            data: [ingresoRecurrente, ingresoEsporadico, ingresoRecurrente + ingresoEsporadico],
-                            backgroundColor: '#5ECE9F'
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: { display: false }
-                        }
-                    }
-                });
-            }
-
-            // Chart de egresos
-            const egresosCtx = document.getElementById('egresosChart');
-            if (egresosCtx) {
-                const egresoFijo = GASTOS_FIJOS.reduce((sum, g) => sum + g.monto, 0);
-                const egresoDeuda = DEUDAS.reduce((sum, d) => sum + d.cuota, 0);
-                const egresoEsporadico = egresosEsporadicos.reduce((sum, e) => sum + e.monto, 0);
-                const egresosPersonales = gastosPsersonales.reduce((sum, g) => sum + (g.monto || 0), 0);
-                
-                new Chart(egresosCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Gastos Fijos', 'Deudas', 'Esporádicos', 'Personales', 'Total'],
-                        datasets: [{
-                            label: 'Monto',
-                            data: [egresoFijo, egresoDeuda, egresoEsporadico, egresosPersonales, egresoFijo + egresoDeuda + egresoEsporadico + egresosPersonales],
-                            backgroundColor: '#FFD6E8'
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: { display: false }
-                        }
-                    }
-                });
-            }
         }
 
         function renderIngresos() {
-            const ingresoRecurrente = CLIENTES_RECURRENTES.reduce((sum, c) => sum + c.monto, 0);
-            const ingresoEsporadico = ingresosEsporadicos.reduce((sum, i) => sum + i.monto, 0);
+            const totalRecurrente = CLIENTES_RECURRENTES.reduce((sum, c) => sum + c.monto, 0);
+            const totalEsporadico = ingresosEsporadicos.reduce((sum, i) => sum + i.monto, 0);
 
-            let html = `
-                <div class="summary-box">
-                    <div class="summary-row">
-                        <span>Total Ingresos Recurrentes:</span>
-                        <strong>$${ingresoRecurrente.toFixed(2)}</strong>
-                    </div>
-                    <div class="summary-row">
-                        <span>Total Ingresos Esporádicos:</span>
-                        <strong>$${ingresoEsporadico.toFixed(2)}</strong>
-                    </div>
-                    <div class="summary-row" style="border-bottom: 2px solid #5ECE9F !important; padding-top: 12px !important; margin-top: 12px !important;">
-                        <span style="font-weight: 700;">TOTAL INGRESOS:</span>
-                        <strong style="font-size: 1.1rem; color: #5ECE9F;">$${(ingresoRecurrente + ingresoEsporadico).toFixed(2)}</strong>
-                    </div>
-                </div>
-            `;
-            
-            html += '<div>';
+            document.getElementById('totalRecurrente').textContent = '$' + totalRecurrente.toFixed(2);
+            document.getElementById('totalEsporadico').textContent = '$' + totalEsporadico.toFixed(2);
+            document.getElementById('totalIngresos').textContent = '$' + (totalRecurrente + totalEsporadico).toFixed(2);
+
+            let html = '';
             CLIENTES_RECURRENTES.forEach(cliente => {
                 html += `
                     <div class="item-row">
                         <input type="checkbox" class="checkbox">
                         <div class="item-name">${cliente.nombre}</div>
-                        <input type="number" value="${cliente.monto}" class="input-field">
-                        <div>$${cliente.monto}</div>
+                        <div class="item-monto">$${cliente.monto}</div>
                     </div>
                 `;
             });
-            html += '</div>';
+            document.getElementById('ingresosRecurrentesContainer').innerHTML = html;
 
-            html += '<div>';
+            html = '';
             ingresosEsporadicos.forEach((ingreso, idx) => {
                 html += `
-                    <div class="esporadicos-list">
-                        <div>${ingreso.nombre}</div>
-                        <input type="number" value="${ingreso.monto}" class="input-field" onchange="actualizarIngresoEsporadico(${idx}, this.value)">
-                        <div>$${ingreso.monto}</div>
-                        <button class="btn-small" onclick="eliminarIngresoEsporadico(${idx})">Eliminar</button>
+                    <div class="item-row">
+                        <span style="text-align: center;">✏️</span>
+                        <div class="item-name">${ingreso.nombre}</div>
+                        <input type="number" value="${ingreso.monto}" class="input-field" onchange="actualizarIngresoEsporadico(${idx}, this.value)" style="grid-column: 3;">
+                        <button class="btn btn-delete" onclick="eliminarIngresoEsporadico(${idx})">Eliminar</button>
                     </div>
                 `;
             });
-            html += '<button class="add-btn" onclick="agregarIngresoEsporadico()">+ Agregar Ingreso Esporádico</button></div>';
-            
-            document.getElementById('ingressosRecurrentesContainer').innerHTML = html.split('<div>')[1] + '</div>';
-            document.getElementById('ingressosEsporadicosContainer').innerHTML = html.split('<div>')[2] + '</div>';
+            if (html === '') html = '<p style="color: var(--text-light); padding: 16px 0;">Sin ingresos esporádicos aún</p>';
+            document.getElementById('ingresosEsporadicosContainer').innerHTML = html;
         }
 
         function renderEgresos() {
-            const egresoFijo = GASTOS_FIJOS.reduce((sum, g) => sum + g.monto, 0);
-            const egresoDeuda = DEUDAS.reduce((sum, d) => sum + d.cuota, 0);
-            const egresoEsporadico = egresosEsporadicos.reduce((sum, e) => sum + e.monto, 0);
-            const egresosPersonales = gastosPsersonales.reduce((sum, g) => sum + (g.monto || 0), 0);
+            const totalFijos = GASTOS_FIJOS.reduce((sum, g) => sum + g.monto, 0);
+            const totalDeudas = DEUDAS.reduce((sum, d) => sum + d.cuota, 0);
+            const totalEspo = egresosEsporadicos.reduce((sum, e) => sum + e.monto, 0);
+            const totalPersonales = gastosPsersonales.reduce((sum, g) => sum + (g.monto || 0), 0);
+
+            document.getElementById('totalFijos').textContent = '$' + totalFijos.toFixed(2);
+            document.getElementById('totalDeudas').textContent = '$' + totalDeudas.toFixed(2);
+            document.getElementById('totalPersonales').textContent = '$' + totalPersonales.toFixed(2);
+            document.getElementById('totalEgresosEspo').textContent = '$' + totalEspo.toFixed(2);
+            document.getElementById('totalEgresos').textContent = '$' + (totalFijos + totalDeudas + totalPersonales + totalEspo).toFixed(2);
 
             // Deudas
-            let html = `
-                <div class="summary-box">
-                    <div class="summary-row">
-                        <span>Gastos Fijos:</span>
-                        <strong>$${egresoFijo.toFixed(2)}</strong>
-                    </div>
-                    <div class="summary-row">
-                        <span>Cuotas Deudas:</span>
-                        <strong>$${egresoDeuda.toFixed(2)}</strong>
-                    </div>
-                    <div class="summary-row">
-                        <span>Egresos Esporádicos:</span>
-                        <strong>$${egresoEsporadico.toFixed(2)}</strong>
-                    </div>
-                    <div class="summary-row">
-                        <span>Gastos Personales:</span>
-                        <strong>$${egresosPersonales.toFixed(2)}</strong>
-                    </div>
-                    <div class="summary-row" style="border-bottom: 2px solid #FFD6E8 !important; padding-top: 12px !important; margin-top: 12px !important;">
-                        <span style="font-weight: 700;">TOTAL EGRESOS:</span>
-                        <strong style="font-size: 1.1rem; color: #d63031;">$${(egresoFijo + egresoDeuda + egresoEsporadico + egresosPersonales).toFixed(2)}</strong>
-                    </div>
-                </div>
-            `;
-
-            html += '<div>';
+            let html = '';
             DEUDAS.forEach(deuda => {
                 html += `
                     <div class="item-row">
                         <input type="checkbox" class="checkbox">
                         <div class="item-name">${deuda.nombre}</div>
-                        <input type="number" value="${deuda.monto}" class="input-field">
-                        <div>$${deuda.cuota}/mes</div>
+                        <div style="font-size: 0.9rem; color: var(--text-light);">Deuda: $${deuda.monto}</div>
+                        <div class="item-monto">$${deuda.cuota}/mes</div>
                     </div>
                 `;
             });
-            html += '</div>';
             document.getElementById('deudaContainer').innerHTML = html;
 
             // Gastos fijos
-            html = '<div>';
+            html = '';
             GASTOS_FIJOS.forEach(gasto => {
                 html += `
                     <div class="item-row">
                         <input type="checkbox" class="checkbox">
                         <div class="item-name">${gasto.nombre}</div>
-                        <input type="number" value="${gasto.monto}" class="input-field">
-                        <div>$${gasto.monto}</div>
+                        <div class="item-monto">$${gasto.monto}</div>
                     </div>
                 `;
             });
-            html += '</div>';
             document.getElementById('gastosContainer').innerHTML = html;
 
             // Gastos personales
-            html = '<div>';
-            GASTOS_PERSONALES.forEach((gasto, idx) => {
+            html = '';
+            GASTOS_PERSONALES.forEach((gasto) => {
                 const valor = gastosPsersonales.find(g => g.id === gasto.id)?.monto || 0;
                 html += `
                     <div class="item-row">
-                        <div class="item-name">${gasto.icono} ${gasto.nombre}</div>
-                        <input type="number" placeholder="$0" value="${valor}" class="input-field" onchange="actualizarGastoPersonal('${gasto.id}', this.value)">
+                        <span style="text-align: center;">${gasto.icono}</span>
+                        <div class="item-name">${gasto.nombre}</div>
+                        <input type="number" placeholder="$0" value="${valor}" class="input-field" onchange="actualizarGastoPersonal('${gasto.id}', this.value)" style="grid-column: 3;">
                     </div>
                 `;
             });
-            html += '<button class="add-btn" onclick="agregarEgresoEsporadico()">+ Agregar Gasto Esporádico</button></div>';
             document.getElementById('gastosPsersonalesContainer').innerHTML = html;
 
             // Egresos esporádicos
-            html = '<div>';
+            html = '';
             egresosEsporadicos.forEach((egreso, idx) => {
                 html += `
-                    <div class="esporadicos-list">
-                        <div>${egreso.nombre}</div>
-                        <input type="number" value="${egreso.monto}" class="input-field" onchange="actualizarEgresoEsporadico(${idx}, this.value)">
-                        <div>$${egreso.monto}</div>
-                        <button class="btn-small" onclick="eliminarEgresoEsporadico(${idx})">Eliminar</button>
+                    <div class="item-row">
+                        <span style="text-align: center;">✏️</span>
+                        <div class="item-name">${egreso.nombre}</div>
+                        <input type="number" value="${egreso.monto}" class="input-field" onchange="actualizarEgresoEsporadico(${idx}, this.value)" style="grid-column: 3;">
+                        <button class="btn btn-delete" onclick="eliminarEgresoEsporadico(${idx})">Eliminar</button>
                     </div>
                 `;
             });
-            html += '</div>';
+            if (html === '') html = '<p style="color: var(--text-light); padding: 16px 0;">Sin egresos esporádicos aún</p>';
             document.getElementById('egresosEsporadicosContainer').innerHTML = html;
         }
 
@@ -956,29 +861,32 @@
             const porcentajeAhorro = Math.min((disponible / metaAhorro) * 100, 100);
 
             const html = `
-                <div class="card" style="border-top-color: #D6E8FF;">
+                <div class="card">
                     <div class="summary-box">
                         <div class="summary-row">
-                            <span>Total Ingresos:</span>
-                            <strong>$${ingresos.toFixed(2)}</strong>
+                            <span class="summary-label">Total Ingresos</span>
+                            <span class="summary-value">$${ingresos.toFixed(2)}</span>
                         </div>
                         <div class="summary-row">
-                            <span>Total Egresos:</span>
-                            <strong>$${egresos.toFixed(2)}</strong>
+                            <span class="summary-label">Total Egresos</span>
+                            <span class="summary-value">$${egresos.toFixed(2)}</span>
                         </div>
                         <div class="summary-row">
-                            <span>Meta de Ahorro:</span>
-                            <strong>$${metaAhorro}</strong>
+                            <span class="summary-label">Meta de Ahorro</span>
+                            <span class="summary-value">$${metaAhorro}</span>
                         </div>
-                        <div class="summary-row">
-                            <span style="font-weight: 700; color: #5ECE9F;">DISPONIBLE:</span>
-                            <strong style="color: #5ECE9F;">$${disponible.toFixed(2)}</strong>
+                        <div class="summary-row" style="border-bottom: 2px solid var(--mint) !important; padding-top: 12px !important; margin-top: 12px !important;">
+                            <span class="summary-label" style="font-weight: 700; color: var(--mint);">DISPONIBLE</span>
+                            <span class="summary-value" style="color: var(--mint); font-size: 1.1rem;">$${disponible.toFixed(2)}</span>
                         </div>
                     </div>
-                    <div class="progress-bar" style="margin: 20px 0;">
-                        <div class="progress-fill" style="width: ${porcentajeAhorro}%;"></div>
+                    <div style="margin-top: 20px;">
+                        <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 12px;">Progreso del ahorro</p>
+                        <div style="width: 100%; height: 12px; background: #f0f0f0; border-radius: 6px; overflow: hidden;">
+                            <div style="width: ${porcentajeAhorro}%; height: 100%; background: linear-gradient(90deg, #5ECE9F 0%, #3CB878 100%);"></div>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-light); text-align: right; margin-top: 8px;">${porcentajeAhorro.toFixed(0)}% completado</p>
                     </div>
-                    <p style="font-size: 0.9rem; color: var(--text-light); text-align: center;">${porcentajeAhorro.toFixed(0)}% del ahorro completado</p>
                 </div>
             `;
             document.getElementById('planContainer').innerHTML = html;
@@ -987,7 +895,7 @@
         function renderCoach() {
             const html = `
                 <div class="card" style="border-top-color: #FFF4D6;">
-                    <div style="color: var(--text-light); line-height: 1.8;">
+                    <div style="line-height: 1.8;">
                         <p style="margin-bottom: 12px;">✅ <strong>Buen desempeño:</strong> Estás pagando puntualmente</p>
                         <p style="margin-bottom: 12px;">⚠️ <strong>Atención:</strong> Revisa gastos personales este mes</p>
                         <p style="margin-bottom: 12px;">🎯 <strong>Meta próxima:</strong> Ahorrar $1,500 más en Luna de Miel</p>
@@ -1000,12 +908,15 @@
         // Funciones para agregar/editar
         function agregarIngresoEsporadico() {
             const nombre = prompt('Nombre del ingreso esporádico:');
-            if (nombre) {
-                const monto = parseFloat(prompt('Monto:')) || 0;
-                ingresosEsporadicos.push({ nombre, monto });
-                localStorage.setItem('ingresosEsporadicos', JSON.stringify(ingresosEsporadicos));
-                cargarDatos();
+            if (!nombre) return;
+            const monto = parseFloat(prompt('Monto:')) || 0;
+            if (monto <= 0) {
+                alert('Ingresa un monto válido');
+                return;
             }
+            ingresosEsporadicos.push({ nombre, monto });
+            localStorage.setItem('ingresosEsporadicos', JSON.stringify(ingresosEsporadicos));
+            cargarDatos();
         }
 
         function actualizarIngresoEsporadico(idx, valor) {
@@ -1022,12 +933,15 @@
 
         function agregarEgresoEsporadico() {
             const nombre = prompt('Nombre del egreso esporádico:');
-            if (nombre) {
-                const monto = parseFloat(prompt('Monto:')) || 0;
-                egresosEsporadicos.push({ nombre, monto });
-                localStorage.setItem('egresosEsporadicos', JSON.stringify(egresosEsporadicos));
-                cargarDatos();
+            if (!nombre) return;
+            const monto = parseFloat(prompt('Monto:')) || 0;
+            if (monto <= 0) {
+                alert('Ingresa un monto válido');
+                return;
             }
+            egresosEsporadicos.push({ nombre, monto });
+            localStorage.setItem('egresosEsporadicos', JSON.stringify(egresosEsporadicos));
+            cargarDatos();
         }
 
         function actualizarEgresoEsporadico(idx, valor) {
