@@ -6,7 +6,6 @@
     <title>Gestor Financiero</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: #fafafa; color: #2d3436; }
@@ -15,9 +14,6 @@
             --mint-light: #5ECE9F;
             --text-dark: #2d3436;
             --text-light: #636e72;
-            --bg-light: #fafafa;
-            --white: #ffffff;
-            --pink: #FFD6E8;
         }
         .login-container { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(135deg, #E8D6FF 0%, #D6E8FF 100%); }
         .login-box { background: white; padding: 50px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); width: 100%; max-width: 450px; }
@@ -28,50 +24,40 @@
         .form-group input { width: 100%; padding: 12px 16px; border: 2px solid #f0f0f0; border-radius: 10px; font-family: inherit; font-size: 1rem; }
         .form-group input:focus { outline: none; border-color: var(--mint); }
         .login-button { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--mint-light) 0%, var(--mint) 100%); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 1rem; margin-top: 28px; }
-        .login-button:hover { transform: translateY(-2px); }
-        .login-error { background: var(--pink); color: #d63031; padding: 12px; border-radius: 10px; margin-bottom: 16px; font-size: 0.9rem; }
+        .login-error { background: #FFD6E8; color: #d63031; padding: 12px; border-radius: 10px; margin-bottom: 16px; font-size: 0.9rem; display: none; }
         .app-container { display: flex; min-height: 100vh; }
         .sidebar { width: 280px; background: linear-gradient(180deg, #E8D6FF 0%, #D6E8FF 100%); padding: 40px 24px; border-right: 1px solid #f0f0f0; overflow-y: auto; }
         .sidebar-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 40px; color: var(--text-dark); }
-        .nav-item { padding: 14px 16px; cursor: pointer; font-weight: 500; border-radius: 10px; margin-bottom: 12px; transition: all 0.3s; color: var(--text-light); }
-        .nav-item:hover, .nav-item.active { background: var(--white); color: var(--text-dark); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-        .main-content { flex: 1; overflow-y: auto; padding: 40px; background: var(--bg-light); }
+        .nav-item { padding: 14px 16px; cursor: pointer; font-weight: 500; border-radius: 10px; margin-bottom: 12px; color: var(--text-light); background: transparent; border: none; width: 100%; text-align: left; }
+        .nav-item.active { background: white; color: var(--text-dark); }
+        .main-content { flex: 1; overflow-y: auto; padding: 40px; background: #fafafa; }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
         .header-title { font-size: 1.8rem; font-weight: 700; color: var(--text-dark); }
         .mes-selector { display: flex; gap: 12px; align-items: center; }
-        .mes-selector button { background: white; border: 2px solid #e8e8e8; padding: 10px 16px; border-radius: 10px; cursor: pointer; font-weight: 600; color: var(--text-dark); }
-        .mes-selector button:hover { border-color: var(--mint); }
-        .mes-actual { font-weight: 700; color: var(--text-dark); min-width: 150px; text-align: center; }
+        .mes-selector button { background: white; border: 2px solid #e8e8e8; padding: 10px 16px; border-radius: 10px; cursor: pointer; font-weight: 600; }
+        .mes-actual { font-weight: 700; min-width: 150px; text-align: center; }
         .section { display: none; }
         .section.active { display: block; }
         .dashboard-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-bottom: 40px; }
-        .card { background: white; padding: 28px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); border-top: 4px solid var(--mint-light); }
+        .card { background: white; padding: 28px; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border-top: 4px solid var(--mint-light); }
         .card-label { font-size: 0.9rem; color: var(--text-light); margin-bottom: 8px; }
-        .card-value { font-size: 2.2rem; font-weight: 700; color: var(--text-dark); margin-bottom: 12px; }
-        .card-subtitle { font-size: 0.85rem; color: var(--text-light); }
-        .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 40px; }
-        .chart-container { background: white; padding: 28px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
-        .chart-title { font-size: 1.1rem; font-weight: 600; color: var(--text-dark); margin-bottom: 20px; }
-        .section-title { font-size: 1.3rem; font-weight: 700; color: var(--text-dark); margin-bottom: 20px; margin-top: 40px; }
+        .card-value { font-size: 2.2rem; font-weight: 700; color: var(--text-dark); }
+        .section-title { font-size: 1.3rem; font-weight: 700; color: var(--text-dark); margin: 30px 0 20px 0; }
         table { width: 100%; background: white; border-collapse: collapse; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 40px; }
         thead { background: linear-gradient(135deg, #E8D6FF 0%, #D6E8FF 100%); }
-        th { padding: 16px; text-align: left; font-weight: 600; color: var(--text-dark); }
+        th { padding: 16px; text-align: left; font-weight: 600; }
         td { padding: 16px; border-bottom: 1px solid #f0f0f0; }
-        .estado-badge { display: inline-block; padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
-        .estado-pendiente { background: #FFE5E5; color: #d63031; }
-        .estado-parcial { background: #FFF4D6; color: #d67f00; }
-        .estado-pagado { background: #E5F9F0; color: var(--mint); }
-        select { padding: 8px 12px; border: 1px solid #e8e8e8; border-radius: 8px; font-family: inherit; cursor: pointer; }
-        input[type="number"] { padding: 8px 12px; border: 1px solid #e8e8e8; border-radius: 8px; font-family: inherit; width: 100%; }
-        .falta-pagar { background: #FFE5E5; padding: 16px; border-radius: 12px; margin-bottom: 40px; }
-        .falta-item { padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.2); display: flex; justify-content: space-between; }
-        .btn { padding: 10px 16px; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 0.9rem; }
-        .btn-logout { background: var(--pink); color: #d63031; }
-        .btn-add { background: linear-gradient(135deg, var(--mint-light) 0%, var(--mint) 100%); color: white; padding: 12px 24px; width: 100%; margin-top: 20px; }
+        input[type="number"] { padding: 8px 12px; border: 1px solid #e8e8e8; border-radius: 8px; width: 100%; }
+        .btn { padding: 10px 16px; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; }
+        .btn-mint { background: linear-gradient(135deg, var(--mint-light) 0%, var(--mint) 100%); color: white; }
+        .btn-logout { background: #FFD6E8; color: #d63031; }
+        .btn-add { width: 100%; margin-top: 20px; padding: 12px; }
         .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000; }
         .modal.active { display: flex; }
         .modal-content { background: white; padding: 40px; border-radius: 16px; max-width: 500px; width: 90%; }
-        .modal-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 20px; color: var(--text-dark); }
+        .modal-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 20px; }
+        .falta-pagar { background: #FFE5E5; padding: 16px; border-radius: 12px; margin-bottom: 40px; }
+        .falta-item { padding: 12px 0; display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.2); }
     </style>
 </head>
 <body>
@@ -80,15 +66,15 @@
             <h1 class="login-title">💰</h1>
             <h2 class="login-title">Gestor Financiero</h2>
             <p class="login-subtitle">Inicia sesión para continuar</p>
-            <div id="loginError" class="login-error" style="display: none;"></div>
+            <div id="loginError" class="login-error"></div>
             <form onsubmit="handleLogin(event)">
                 <div class="form-group">
                     <label>Email</label>
-                    <input type="email" id="loginEmail" placeholder="tu@email.com" required>
+                    <input type="email" id="loginEmail" placeholder="andreajijon0896@gmail.com" required>
                 </div>
                 <div class="form-group">
                     <label>Contraseña</label>
-                    <input type="password" id="loginPassword" placeholder="Tu contraseña" required>
+                    <input type="password" id="loginPassword" placeholder="Andrea123!" required>
                 </div>
                 <button type="submit" class="login-button">Iniciar Sesión</button>
             </form>
@@ -117,7 +103,6 @@
 
             <div id="section-dashboard" class="section active">
                 <div class="dashboard-cards" id="dashboardCards"></div>
-                <div class="charts-grid" id="chartsContainer"></div>
                 <div id="faltaPagarContainer"></div>
             </div>
 
@@ -155,7 +140,7 @@
                 <input type="number" id="egresoMonto" placeholder="0.00">
             </div>
             <div style="display: flex; gap: 12px;">
-                <button class="btn" style="flex: 1; background: var(--mint); color: white;" onclick="guardarEgreso()">Guardar</button>
+                <button class="btn btn-mint" style="flex: 1;" onclick="guardarEgreso()">Guardar</button>
                 <button class="btn" style="flex: 1; background: #f0f0f0;" onclick="cerrarModal()">Cancelar</button>
             </div>
         </div>
@@ -165,13 +150,12 @@
         const SUPABASE_URL = 'https://eebfdzyxgsejunphsyyi.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVlYmZkenl4Z3NlanVucGhzeXlpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5MDMxODksImV4cCI6MjA5MDQ3OTE4OX0.JHXM-otv5PVMwXhAPRJSex4_RS2yI76Vwx-oeBfRmX0';
         
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
         let currentUser = null;
         let mesActual = new Date(2026, 2, 1);
         let datos = {};
-        let chartInstances = {};
 
         function getMesKey() {
             return MESES[mesActual.getMonth()] + '-' + mesActual.getFullYear();
@@ -196,12 +180,14 @@
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
-            const btn = e.target.querySelector('button');
             const err = document.getElementById('loginError');
 
             try {
-                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-                if (error) throw error;
+                const { data, error } = await sb.auth.signInWithPassword({ email, password });
+                
+                if (error) {
+                    throw error;
+                }
                 
                 currentUser = data.user;
                 document.getElementById('userEmail').textContent = currentUser.email;
@@ -211,24 +197,26 @@
                 renderNav();
                 cargarDatos();
             } catch (error) {
-                err.textContent = 'Error: Credenciales incorrectas';
+                err.textContent = 'Error: ' + error.message;
                 err.style.display = 'block';
             }
         }
 
         async function handleLogout() {
-            await supabase.auth.signOut();
+            await sb.auth.signOut();
+            currentUser = null;
             document.getElementById('appScreen').style.display = 'none';
             document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('loginError').style.display = 'none';
         }
 
         function renderNav() {
             const html = `
-                <div class="nav-item active" onclick="irA('dashboard')">📊 Dashboard</div>
-                <div class="nav-item" onclick="irA('ingresos')">💵 Ingresos</div>
-                <div class="nav-item" onclick="irA('egresos')">💸 Egresos</div>
-                <div class="nav-item" onclick="irA('plan')">📋 Plan</div>
-                <div class="nav-item" onclick="irA('coach')">🎯 Coach</div>
+                <button class="nav-item active" onclick="irA('dashboard')">📊 Dashboard</button>
+                <button class="nav-item" onclick="irA('ingresos')">💵 Ingresos</button>
+                <button class="nav-item" onclick="irA('egresos')">💸 Egresos</button>
+                <button class="nav-item" onclick="irA('plan')">📋 Plan</button>
+                <button class="nav-item" onclick="irA('coach')">🎯 Coach</button>
             `;
             document.getElementById('navContainer').innerHTML = html;
         }
@@ -237,7 +225,7 @@
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.getElementById('section-' + seccion).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            event.target.closest('.nav-item').classList.add('active');
+            event.target.classList.add('active');
         }
 
         async function cargarDatos() {
@@ -245,20 +233,14 @@
                 const mesKey = getMesKey();
                 document.getElementById('mesActual').textContent = getMesNombre();
 
-                const { data: ingRecurrentes } = await supabase.from('ingresos_recurrentes_checks').select('*').eq('mes', mesKey);
-                const { data: ingEsporadicos } = await supabase.from('ingresos_esporadicos').select('*').eq('mes', mesKey);
-                const { data: pagosDeudas } = await supabase.from('pagos_deudas').select('*').eq('mes', mesKey);
-                const { data: pagosGastos } = await supabase.from('pagos_gastos_fijos').select('*').eq('mes', mesKey);
-                const { data: gastosPersonales } = await supabase.from('gastos_personales').select('*').eq('mes', mesKey);
-                const { data: egresosEspo } = await supabase.from('egresos_esporadicos').select('*').eq('mes', mesKey);
+                const { data: ingRecurrentes } = await sb.from('ingresos_recurrentes_checks').select('*').eq('mes', mesKey);
+                const { data: pagosGastos } = await sb.from('pagos_gastos_fijos').select('*').eq('mes', mesKey);
+                const { data: pagosDeudas } = await sb.from('pagos_deudas').select('*').eq('mes', mesKey);
 
                 datos = {
                     ingRecurrentes: ingRecurrentes || [],
-                    ingEsporadicos: ingEsporadicos || [],
-                    pagosDeudas: pagosDeudas || [],
                     pagosGastos: pagosGastos || [],
-                    gastosPersonales: gastosPersonales || [],
-                    egresosEspo: egresosEspo || []
+                    pagosDeudas: pagosDeudas || []
                 };
 
                 renderDashboard();
@@ -267,7 +249,7 @@
                 renderPlan();
                 renderCoach();
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error cargando datos:', error);
             }
         }
 
@@ -275,7 +257,6 @@
             const ingresosMarcados = datos.ingRecurrentes.filter(r => r.marcado).reduce((sum, r) => sum + r.monto, 0);
             const egresosPagados = datos.pagosGastos.reduce((sum, g) => sum + g.monto_pagado, 0) +
                                    datos.pagosDeudas.reduce((sum, d) => sum + d.monto_pagado, 0);
-
             const disponible = ingresosMarcados - egresosPagados;
 
             let html = `
@@ -284,41 +265,19 @@
                     <div class="card-value">$${ingresosMarcados.toFixed(2)}</div>
                 </div>
                 <div class="card" style="border-top-color: #FFD6E8;">
-                    <div class="card-label">💸 Egresos Pagados</div>
+                    <div class="card-label">💸 Egresos</div>
                     <div class="card-value" style="color: #d63031;">$${egresosPagados.toFixed(2)}</div>
                 </div>
                 <div class="card" style="border-top-color: #D6E8FF;">
                     <div class="card-label">💰 Balance</div>
-                    <div class="card-value" style="color: var(--mint);">$${disponible.toFixed(2)}</div>
+                    <div class="card-value" style="color: #3CB878;">$${disponible.toFixed(2)}</div>
                 </div>
             `;
             document.getElementById('dashboardCards').innerHTML = html;
 
-            let chartHtml = `<div class="chart-container"><div class="chart-title">📊 Ingresos vs Egresos</div><canvas id="myChart"></canvas></div>`;
-            document.getElementById('chartsContainer').innerHTML = chartHtml;
-            
-            setTimeout(() => {
-                const ctx = document.getElementById('myChart');
-                if (ctx) {
-                    if (chartInstances.main) chartInstances.main.destroy();
-                    chartInstances.main = new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: ['Ingresos', 'Egresos'],
-                            datasets: [{
-                                label: 'Cantidad',
-                                data: [ingresosMarcados, egresosPagados],
-                                backgroundColor: ['#5ECE9F', '#FFD6E8']
-                            }]
-                        },
-                        options: { responsive: true }
-                    });
-                }
-            }, 100);
-
-            let faltaHtml = '<div class="falta-pagar"><h3 style="color: #d63031; margin-bottom: 16px;">⚠️ QUÉ FALTA PAGAR</h3>';
-            
+            let faltaHtml = '<div class="falta-pagar"><h3 style="color: #d63031; margin: 0 0 16px 0;">⚠️ QUÉ FALTA PAGAR</h3>';
             const faltaItems = [];
+            
             datos.ingRecurrentes.filter(r => !r.marcado).forEach(r => {
                 faltaItems.push({ nombre: r.cliente_nombre + ' (Ingreso)', monto: r.monto });
             });
@@ -329,7 +288,7 @@
             });
 
             if (faltaItems.length === 0) {
-                faltaHtml += '<p style="color: var(--mint); font-weight: 600;">✅ ¡Todo pagado!</p>';
+                faltaHtml += '<p style="color: #3CB878; font-weight: 600; margin: 0;">✅ ¡Todo pagado!</p>';
             } else {
                 faltaItems.forEach(item => {
                     faltaHtml += `<div class="falta-item"><span>${item.nombre}</span><span style="color: #d63031; font-weight: 700;">$${item.monto.toFixed(2)}</span></div>`;
@@ -343,9 +302,14 @@
         function renderIngresos() {
             let html = '<table><thead><tr><th>Compañía</th><th>Monto</th><th>Estado</th></tr></thead><tbody>';
             
-            datos.ingRecurrentes.forEach(ing => {
-                html += `<tr><td>${ing.cliente_nombre}</td><td>$${ing.monto}</td><td><span class="estado-badge ${ing.marcado ? 'estado-pagado' : 'estado-pendiente'}">${ing.marcado ? '✓' : '✗'}</span></td></tr>`;
-            });
+            if (datos.ingRecurrentes.length === 0) {
+                html += '<tr><td colspan="3" style="text-align: center; color: #636e72;">Sin ingresos configurados</td></tr>';
+            } else {
+                datos.ingRecurrentes.forEach(ing => {
+                    const badge = ing.marcado ? '<span style="background: #E5F9F0; color: #3CB878; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">✓</span>' : '<span style="background: #FFE5E5; color: #d63031; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">✗</span>';
+                    html += `<tr><td>${ing.cliente_nombre}</td><td>$${ing.monto}</td><td>${badge}</td></tr>`;
+                });
+            }
 
             html += '</tbody></table>';
             document.getElementById('tablasIngresos').innerHTML = html;
@@ -354,13 +318,17 @@
         function renderEgresos() {
             let html = '<table><thead><tr><th>Concepto</th><th>Total</th><th>Pagado</th><th>Falta</th></tr></thead><tbody>';
             
-            datos.pagosGastos.forEach(g => {
-                const falta = g.monto_total - g.monto_pagado;
-                html += `<tr><td>${g.gasto_nombre}</td><td>$${g.monto_total.toFixed(2)}</td><td><input type="number" value="${g.monto_pagado}" onchange="actualizar('pagos_gastos_fijos', ${g.id}, this.value)" style="width: 80px;"></td><td style="color: ${falta > 0 ? '#d63031' : 'var(--mint)'};">$${falta.toFixed(2)}</td></tr>`;
-            });
+            if (datos.pagosGastos.length === 0) {
+                html += '<tr><td colspan="4" style="text-align: center; color: #636e72;">Sin gastos configurados</td></tr>';
+            } else {
+                datos.pagosGastos.forEach(g => {
+                    const falta = g.monto_total - g.monto_pagado;
+                    html += `<tr><td>${g.gasto_nombre}</td><td>$${g.monto_total.toFixed(2)}</td><td><input type="number" value="${g.monto_pagado}" onchange="actualizar('pagos_gastos_fijos', ${g.id}, this.value)" style="width: 80px;"></td><td style="color: ${falta > 0 ? '#d63031' : '#3CB878'};">$${falta.toFixed(2)}</td></tr>`;
+                });
+            }
 
             html += '</tbody></table>';
-            html += '<button class="btn-add" onclick="abrirModal()">+ Agregar Egreso</button>';
+            html += '<button class="btn btn-mint btn-add" onclick="abrirModal()">+ Agregar Egreso</button>';
             document.getElementById('tablasEgresos').innerHTML = html;
         }
 
@@ -369,18 +337,18 @@
             const egresosPagados = datos.pagosGastos.reduce((sum, g) => sum + g.monto_pagado, 0);
             const disponible = ingresosMarcados - egresosPagados;
 
-            const html = `<div class="card"><div style="padding: 20px;"><div style="display: flex; justify-content: space-between; margin-bottom: 16px;"><span>Ingresos: </span><strong>$${ingresosMarcados.toFixed(2)}</strong></div><div style="display: flex; justify-content: space-between;"><span>Disponible: </span><strong style="color: var(--mint);">$${disponible.toFixed(2)}</strong></div></div></div>`;
+            const html = `<div class="card"><div style="padding: 20px;"><div style="display: flex; justify-content: space-between; margin-bottom: 16px;"><span>Ingresos: </span><strong>$${ingresosMarcados.toFixed(2)}</strong></div><div style="display: flex; justify-content: space-between;"><span>Disponible: </span><strong style="color: #3CB878;">$${disponible.toFixed(2)}</strong></div></div></div>`;
             document.getElementById('planContainer').innerHTML = html;
         }
 
         function renderCoach() {
-            const html = `<div class="card" style="border-top-color: #FFF4D6;"><div style="line-height: 1.8;"><p>✅ Ingresa montos pagados</p><p>✅ El dashboard se actualiza automáticamente</p><p>✅ Navega entre meses con ← →</p></div></div>`;
+            const html = `<div class="card" style="border-top-color: #FFF4D6;"><div style="line-height: 1.8; padding: 0;"><p style="margin: 0 0 12px 0;">✅ Ingresa montos pagados en la tabla</p><p style="margin: 0 0 12px 0;">✅ El dashboard se actualiza automáticamente</p><p style="margin: 0;">✅ Navega entre meses con ← →</p></div></div>`;
             document.getElementById('coachContainer').innerHTML = html;
         }
 
         async function actualizar(tabla, id, valor) {
             const monto = parseFloat(valor) || 0;
-            await supabase.from(tabla).update({ monto_pagado: monto }).eq('id', id);
+            await sb.from(tabla).update({ monto_pagado: monto }).eq('id', id);
             cargarDatos();
         }
 
@@ -401,21 +369,26 @@
                 return;
             }
 
-            await supabase.from('egresos_esporadicos').insert({
-                nombre,
-                monto_total: monto,
-                monto_pagado: 0,
-                mes: getMesKey(),
-                emoji: '💸'
-            });
+            try {
+                await sb.from('egresos_esporadicos').insert({
+                    nombre,
+                    monto_total: monto,
+                    monto_pagado: 0,
+                    mes: getMesKey(),
+                    emoji: '💸'
+                });
 
-            document.getElementById('egresoNombre').value = '';
-            document.getElementById('egresoMonto').value = '';
-            cerrarModal();
-            cargarDatos();
+                document.getElementById('egresoNombre').value = '';
+                document.getElementById('egresoMonto').value = '';
+                cerrarModal();
+                cargarDatos();
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al guardar');
+            }
         }
 
-        supabase.auth.onAuthStateChange((event, session) => {
+        sb.auth.onAuthStateChange((event, session) => {
             if (session) {
                 currentUser = session.user;
                 document.getElementById('userEmail').textContent = currentUser.email;
