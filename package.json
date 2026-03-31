@@ -1,0 +1,12 @@
+{
+  "name": "gestor-financiero-andrea",
+  "version": "1.0.0",
+  "description": "App de gestión financiera personal con Supabase",
+  "scripts": {
+    "dev": "python -m http.server 3000",
+    "start": "python -m http.server 3000"
+  },
+  "keywords": ["finanzas", "presupuesto", "supabase"],
+  "author": "Andrea Jijón",
+  "license": "MIT"
+}
