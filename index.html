@@ -9,12 +9,31 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: #f8f9fa; color: #1a1a1a; min-height: 100vh; display: flex; flex-direction: column; }
+        .login-container { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(135deg, #5E51CD 0%, #3d38a0 100%); }
+        .login-box { background: white; padding: 40px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); width: 100%; max-width: 400px; }
+        .login-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 8px; color: #1a1a1a; text-align: center; }
+        .login-subtitle { font-size: 0.95rem; color: #666; text-align: center; margin-bottom: 32px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.9rem; }
+        .form-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit; font-size: 0.95rem; }
+        .form-group input:focus { outline: none; border-color: #00BE95; box-shadow: 0 0 0 3px rgba(0, 190, 149, 0.1); }
+        .login-button { width: 100%; padding: 12px; background: linear-gradient(135deg, #5E51CD 0%, #3d38a0 100%); color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 1rem; margin-top: 24px; }
+        .login-button:hover { opacity: 0.9; }
+        .login-button:disabled { opacity: 0.6; cursor: not-allowed; }
+        .login-error { background: #FFE5E5; color: #C33; padding: 12px; border-radius: 6px; margin-bottom: 16px; font-size: 0.9rem; }
+        .login-info { background: #E5F9F0; color: #006B56; padding: 12px; border-radius: 6px; margin-bottom: 16px; font-size: 0.85rem; }
         .top-bar { background: linear-gradient(135deg, #5E51CD 0%, #3d38a0 100%); color: white; padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .top-bar-left { display: flex; align-items: center; gap: 20px; }
         .top-bar-title { font-size: 1.3rem; font-weight: 700; }
+        .user-info { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 6px; font-size: 0.9rem; }
         .mes-selector { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 6px; }
         .mes-selector button { background: rgba(255,255,255,0.2); border: none; color: white; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: 600; }
         .mes-display { font-weight: 700; min-width: 120px; text-align: center; }
-        .top-bar-right button { background: #00BE95; color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        .top-bar-right { display: flex; gap: 12px; align-items: center; }
+        .top-bar-right button { background: #00BE95; color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.9rem; }
+        .top-bar-right button:hover { background: #00a080; }
+        .logout-button { background: #FF5252 !important; }
+        .logout-button:hover { background: #ff3838 !important; }
         .container { display: flex; flex: 1; }
         .sidebar { width: 280px; background: linear-gradient(135deg, #5E51CD 0%, #3d38a0 100%); color: white; padding: 30px 0; box-shadow: 2px 0 10px rgba(0,0,0,0.1); }
         .nav-item { padding: 16px 24px; cursor: pointer; font-weight: 500; transition: all 0.2s ease; border-left: 4px solid transparent; }
@@ -32,21 +51,15 @@
         .card-subtitle { font-size: 0.85rem; color: #999; }
         .form-section { background: white; padding: 24px; border-radius: 12px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
         .form-section h3 { margin-bottom: 20px; color: #1a1a1a; }
-        .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.9rem; }
-        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit; font-size: 0.95rem; }
-        .form-group input:focus, .form-group select:focus { outline: none; border-color: #00BE95; box-shadow: 0 0 0 3px rgba(0, 190, 149, 0.1); }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+        .egreso-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap: 12px; align-items: end; padding: 12px; background: #f8f9fa; border-radius: 6px; margin-bottom: 12px; }
         .btn-agregar { background: #00BE95; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; cursor: pointer; }
         .btn-agregar:hover { background: #00a080; }
         .btn-eliminar { background: #FF5252; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 0.85rem; }
-        .egreso-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap: 12px; align-items: end; padding: 12px; background: #f8f9fa; border-radius: 6px; margin-bottom: 12px; }
         .progreso-bar { width: 100%; height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden; margin: 8px 0; }
         .progreso-fill { height: 100%; background: #00BE95; transition: width 0.3s ease; }
         .progreso-text { display: flex; justify-content: space-between; font-size: 0.85rem; color: #666; }
         .loading { text-align: center; padding: 40px; color: #999; }
         .error { background: #FFE5E5; color: #C33; padding: 12px; border-radius: 6px; margin-bottom: 16px; }
-        .success { background: #E5F9F0; color: #006B56; padding: 12px; border-radius: 6px; margin-bottom: 16px; }
         .estado-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
         .estado-pendiente { background: #FFE5E5; color: #C33; }
         .estado-parcial { background: #FFF3E0; color: #E65100; }
@@ -60,31 +73,60 @@
     </style>
 </head>
 <body>
-    <div class="top-bar">
-        <div class="top-bar-left">
-            <div class="top-bar-title">💰 Gestor Financiero</div>
-            <div class="mes-selector">
-                <button onclick="mesAnterior()">←</button>
-                <div class="mes-display" id="mesActualDisplay">Marzo 2026</div>
-                <button onclick="mesSiguiente()">→</button>
+    <div id="loginScreen" class="login-container">
+        <div class="login-box">
+            <h1 class="login-title">💰 Gestor Financiero</h1>
+            <p class="login-subtitle">Inicia sesión para continuar</p>
+            <div id="loginError" class="login-error" style="display: none;"></div>
+            <div class="login-info">
+                <strong>Datos de login:</strong><br>
+                Andrea: andreajijon0896@gmail.com / Andrea123!<br>
+                Allan: allan040917@gmail.com / Allan123!
             </div>
-        </div>
-        <div class="top-bar-right">
-            <button onclick="guardarCambios()">💾 Guardar</button>
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" placeholder="tu@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="loginPassword" placeholder="Tu contraseña" required>
+                </div>
+                <button type="submit" class="login-button" id="loginBtn">Iniciar Sesión</button>
+            </form>
         </div>
     </div>
 
-    <div class="container">
-        <div class="sidebar">
-            <div id="navContainer"></div>
+    <div id="appScreen" style="display: none; flex: 1; display: flex; flex-direction: column;">
+        <div class="top-bar">
+            <div class="top-bar-left">
+                <div class="top-bar-title">💰 Gestor Financiero</div>
+                <div class="user-info">
+                    <span id="userEmail">usuario@example.com</span>
+                </div>
+                <div class="mes-selector">
+                    <button onclick="mesAnterior()">←</button>
+                    <div class="mes-display" id="mesActualDisplay">Marzo 2026</div>
+                    <button onclick="mesSiguiente()">→</button>
+                </div>
+            </div>
+            <div class="top-bar-right">
+                <button onclick="guardarCambios()">💾 Guardar</button>
+                <button class="logout-button" onclick="handleLogout()">🚪 Salir</button>
+            </div>
         </div>
-        <div class="main-content">
-            <div id="loadingMessage" class="loading">Conectando a Supabase...</div>
-            <div id="section-dashboard" class="section"><div id="dashboardContainer"></div></div>
-            <div id="section-egresos" class="section"><div id="egresosContainer"></div></div>
-            <div id="section-ingresos" class="section"><div id="ingresosContainer"></div></div>
-            <div id="section-ahorros" class="section"><div id="ahorrosContainer"></div></div>
-            <div id="section-coach" class="section"><div id="coachContainer"></div></div>
+
+        <div class="container">
+            <div class="sidebar">
+                <div id="navContainer"></div>
+            </div>
+            <div class="main-content">
+                <div id="loadingMessage" class="loading">Conectando a Supabase...</div>
+                <div id="section-dashboard" class="section"><div id="dashboardContainer"></div></div>
+                <div id="section-egresos" class="section"><div id="egresosContainer"></div></div>
+                <div id="section-ahorros" class="section"><div id="ahorrosContainer"></div></div>
+                <div id="section-coach" class="section"><div id="coachContainer"></div></div>
+            </div>
         </div>
     </div>
 
@@ -95,19 +137,6 @@
         const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
 
         const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
-        const DEUDAS = [
-            { id: 1, nombre: 'BBVA', monto: 8000, color: '#00BE95', cuota: 220 },
-            { id: 2, nombre: 'Cop PJV', monto: 1700, color: '#00C853', cuota: 115 },
-            { id: 3, nombre: 'Pycca', monto: 1400, color: '#2196F3', cuota: 134 },
-            { id: 4, nombre: 'Credifav', monto: 500, color: '#FF5252', cuota: 110 },
-            { id: 5, nombre: 'Tarjeta Crédito', monto: 1600, color: '#FFB800', cuota: 120 },
-            { id: 6, nombre: 'Contifico', monto: 270, color: '#9C27B0', cuota: 270 }
-        ];
-
-        let mesActual = new Date(2026, 2, 1);
-        let egresosData = [];
-        let ahorrosData = [];
-
         const EGRESOS_DEFAULT = [
             { nombre: 'Dátil', monto_total: 25 },
             { nombre: 'Sembly', monto_total: 30 },
@@ -124,6 +153,48 @@
             { nombre: 'Lazo', monto_total: 90 },
             { nombre: 'Alquiler', monto_total: 225 }
         ];
+
+        let mesActual = new Date(2026, 2, 1);
+        let egresosData = [];
+        let ahorrosData = [];
+        let currentUser = null;
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const loginBtn = document.getElementById('loginBtn');
+            const loginError = document.getElementById('loginError');
+
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Conectando...';
+            loginError.style.display = 'none';
+
+            try {
+                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                if (error) throw error;
+                currentUser = data.user;
+                document.getElementById('userEmail').textContent = currentUser.email;
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('appScreen').style.display = 'flex';
+                cargarDatos();
+            } catch (error) {
+                loginError.textContent = 'Error: ' + (error.message || 'Credenciales incorrectas');
+                loginError.style.display = 'block';
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Iniciar Sesión';
+            }
+        }
+
+        async function handleLogout() {
+            await supabaseClient.auth.signOut();
+            currentUser = null;
+            document.getElementById('appScreen').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('loginError').style.display = 'none';
+        }
 
         function getMesKey() { return MESES[mesActual.getMonth()] + '-2026'; }
         function getMesNombre() { return mesActual.toLocaleString('es-ES', { month: 'long', year: 'numeric' }).split(' ').map((word, idx) => idx === 0 ? word.charAt(0).toUpperCase() + word.slice(1) : word).join(' '); }
@@ -316,10 +387,16 @@
             if (montoPagado > 0 && montoPagado < egreso.monto_total) estado = 'parcial';
             else if (montoPagado >= egreso.monto_total) estado = 'completado';
             await supabaseClient.from('egresos_fijos').update({ monto_pagado: montoPagado, estado: estado }).eq('id', egresoId);
+            renderDashboard();
+            renderEgresos();
+            renderCoach();
         }
 
         async function cambiarEstadoEgreso(egresoId, estado) {
             await supabaseClient.from('egresos_fijos').update({ estado: estado }).eq('id', egresoId);
+            renderDashboard();
+            renderEgresos();
+            renderCoach();
         }
 
         async function eliminarEgreso(egresoId) {
@@ -340,18 +417,25 @@
 
         async function actualizarNombreAhorro(ahorroId, nombre) {
             await supabaseClient.from('ahorros').update({ nombre }).eq('id', ahorroId);
+            renderAhorros();
+            renderDashboard();
         }
 
         async function actualizarMetaAhorro(ahorroId, meta) {
             await supabaseClient.from('ahorros').update({ meta: parseFloat(meta) || 0 }).eq('id', ahorroId);
+            renderAhorros();
+            renderDashboard();
         }
 
         async function actualizarActualAhorro(ahorroId, actual) {
             await supabaseClient.from('ahorros').update({ actual: parseFloat(actual) || 0 }).eq('id', ahorroId);
+            renderAhorros();
+            renderDashboard();
         }
 
         async function actualizarColorAhorro(ahorroId, color) {
             await supabaseClient.from('ahorros').update({ color }).eq('id', ahorroId);
+            renderAhorros();
         }
 
         async function eliminarAhorro(ahorroId) {
@@ -375,7 +459,18 @@
             alert('✅ Los cambios se guardaron automáticamente en Supabase');
         }
 
-        cargarDatos();
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+            if (session) {
+                currentUser = session.user;
+                document.getElementById('userEmail').textContent = currentUser.email;
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('appScreen').style.display = 'flex';
+                cargarDatos();
+            } else {
+                document.getElementById('appScreen').style.display = 'none';
+                document.getElementById('loginScreen').style.display = 'flex';
+            }
+        });
     </script>
 </body>
 </html>
