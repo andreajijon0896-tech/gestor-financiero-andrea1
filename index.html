@@ -277,29 +277,6 @@
             color: var(--text-dark);
         }
 
-        .status-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .status-pendiente {
-            background: #FFE5E5;
-            color: #d63031;
-        }
-
-        .status-parcial {
-            background: #FFF4D6;
-            color: #d67f00;
-        }
-
-        .status-pagado {
-            background: #E5F9F0;
-            color: var(--mint);
-        }
-
         .btn {
             padding: 10px 16px;
             border: none;
@@ -480,7 +457,7 @@
                 
                 <div class="summary-box">
                     <div class="summary-row">
-                        <span class="summary-label">Ingresos Recurrentes</span>
+                        <span class="summary-label">Ingresos Recurrentes (Marcados)</span>
                         <span class="summary-value" id="totalRecurrente">$0</span>
                     </div>
                     <div class="summary-row">
@@ -488,7 +465,7 @@
                         <span class="summary-value" id="totalEsporadico">$0</span>
                     </div>
                     <div class="summary-row" style="border-bottom: 2px solid var(--mint) !important; padding-top: 12px !important; margin-top: 12px !important;">
-                        <span style="font-weight: 700; color: var(--mint);">TOTAL INGRESOS</span>
+                        <span style="font-weight: 700; color: var(--mint);">TOTAL REGISTRADO</span>
                         <span class="summary-value" style="color: var(--mint); font-size: 1.1rem;" id="totalIngresos">$0</span>
                     </div>
                 </div>
@@ -511,11 +488,11 @@
                 
                 <div class="summary-box">
                     <div class="summary-row">
-                        <span class="summary-label">Gastos Fijos</span>
+                        <span class="summary-label">Gastos Fijos (Pagados)</span>
                         <span class="summary-value" id="totalFijos">$0</span>
                     </div>
                     <div class="summary-row">
-                        <span class="summary-label">Cuotas Deudas</span>
+                        <span class="summary-label">Cuotas Deudas (Pagadas)</span>
                         <span class="summary-value" id="totalDeudas">$0</span>
                     </div>
                     <div class="summary-row">
@@ -523,11 +500,11 @@
                         <span class="summary-value" id="totalPersonales">$0</span>
                     </div>
                     <div class="summary-row">
-                        <span class="summary-label">Egresos Esporádicos</span>
+                        <span class="summary-label">Egresos Esporádicos (Pagados)</span>
                         <span class="summary-value" id="totalEgresosEspo">$0</span>
                     </div>
                     <div class="summary-row" style="border-bottom: 2px solid #d63031 !important; padding-top: 12px !important; margin-top: 12px !important;">
-                        <span style="font-weight: 700; color: #d63031;">TOTAL EGRESOS</span>
+                        <span style="font-weight: 700; color: #d63031;">TOTAL REGISTRADO</span>
                         <span class="summary-value" style="color: #d63031; font-size: 1.1rem;" id="totalEgresos">$0</span>
                     </div>
                 </div>
@@ -691,27 +668,21 @@
 
         async function cargarDatos() {
             try {
-                // Cargar ingresos recurrentes
                 const { data: ingRecurrentes } = await supabase.from('ingresos_recurrentes_checks').select('*').eq('mes', mesActual);
                 datosIngresos.recurrentes = ingRecurrentes || [];
 
-                // Cargar ingresos esporádicos
                 const { data: ingEsporadicos } = await supabase.from('ingresos_esporadicos').select('*').eq('mes', mesActual);
                 datosIngresos.esporadicos = ingEsporadicos || [];
 
-                // Cargar pagos deudas
                 const { data: pagosDeudas } = await supabase.from('pagos_deudas').select('*').eq('mes', mesActual);
                 datosEgresos.deudas = pagosDeudas || [];
 
-                // Cargar pagos gastos fijos
                 const { data: pagosGastos } = await supabase.from('pagos_gastos_fijos').select('*').eq('mes', mesActual);
                 datosEgresos.gastos = pagosGastos || [];
 
-                // Cargar gastos personales
                 const { data: gastosPersonales } = await supabase.from('gastos_personales').select('*').eq('mes', mesActual);
                 datosEgresos.personales = gastosPersonales || [];
 
-                // Cargar egresos esporádicos
                 const { data: egresosEspo } = await supabase.from('egresos_esporadicos').select('*').eq('mes', mesActual);
                 datosEgresos.esporadicos = egresosEspo || [];
 
@@ -727,16 +698,18 @@
         }
 
         function calcularTotalesIngresos() {
+            // Solo los MARCADOS
             const recurrentes = datosIngresos.recurrentes.filter(r => r.marcado).reduce((sum, r) => sum + r.monto, 0);
             const esporadicos = datosIngresos.esporadicos.reduce((sum, e) => sum + e.monto, 0);
             return { recurrentes, esporadicos, total: recurrentes + esporadicos };
         }
 
         function calcularTotalesEgresos() {
-            const fijos = datosEgresos.gastos.filter(g => g.estado === 'pagado').reduce((sum, g) => sum + g.monto_total, 0);
-            const deudas = datosEgresos.deudas.filter(d => d.estado === 'pagado').reduce((sum, d) => sum + d.monto_pagado, 0);
+            // Solo los PAGADOS
+            const fijos = datosEgresos.gastos.filter(g => g.monto_pagado > 0).reduce((sum, g) => sum + g.monto_pagado, 0);
+            const deudas = datosEgresos.deudas.filter(d => d.monto_pagado > 0).reduce((sum, d) => sum + d.monto_pagado, 0);
             const personales = datosEgresos.personales.reduce((sum, p) => sum + p.monto, 0);
-            const esporadicos = datosEgresos.esporadicos.filter(e => e.estado === 'pagado').reduce((sum, e) => sum + e.monto_pagado, 0);
+            const esporadicos = datosEgresos.esporadicos.filter(e => e.monto_pagado > 0).reduce((sum, e) => sum + e.monto_pagado, 0);
             return { fijos, deudas, personales, esporadicos, total: fijos + deudas + personales + esporadicos };
         }
 
@@ -754,7 +727,7 @@
                 <div class="card" style="border-top-color: #FFD6E8;">
                     <div class="card-label">💸 Egresos Pagados</div>
                     <div class="card-value" style="color: #d63031;">$${egresos.total.toFixed(2)}</div>
-                    <div class="card-subtitle">Registrados como completados</div>
+                    <div class="card-subtitle">Registrados como pagados</div>
                 </div>
                 <div class="card" style="border-top-color: #D6E8FF;">
                     <div class="card-label">💰 Balance</div>
@@ -771,7 +744,6 @@
             document.getElementById('totalEsporadico').textContent = '$' + totales.esporadicos.toFixed(2);
             document.getElementById('totalIngresos').textContent = '$' + totales.total.toFixed(2);
 
-            // Recurrentes
             let html = '';
             datosIngresos.recurrentes.forEach(cliente => {
                 html += `
@@ -784,7 +756,6 @@
             });
             document.getElementById('ingresosRecurrentesContainer').innerHTML = html;
 
-            // Esporádicos
             html = '';
             datosIngresos.esporadicos.forEach((ingreso) => {
                 html += `
@@ -805,10 +776,10 @@
             const totalFijosAll = datosEgresos.gastos.reduce((sum, g) => sum + g.monto_total, 0);
             const totalDeudas = datosEgresos.deudas.reduce((sum, d) => sum + d.monto_total, 0);
 
-            document.getElementById('totalFijos').textContent = '$' + totalFijosAll.toFixed(2);
-            document.getElementById('totalDeudas').textContent = '$' + totalDeudas.toFixed(2);
-            document.getElementById('totalPersonales').textContent = '$' + datosEgresos.personales.reduce((sum, p) => sum + p.monto, 0).toFixed(2);
-            document.getElementById('totalEgresosEspo').textContent = '$' + datosEgresos.esporadicos.reduce((sum, e) => sum + (e.monto_total - e.monto_pagado), 0).toFixed(2);
+            document.getElementById('totalFijos').textContent = '$' + totales.fijos.toFixed(2);
+            document.getElementById('totalDeudas').textContent = '$' + totales.deudas.toFixed(2);
+            document.getElementById('totalPersonales').textContent = '$' + totales.personales.toFixed(2);
+            document.getElementById('totalEgresosEspo').textContent = '$' + totales.esporadicos.toFixed(2);
             document.getElementById('totalEgresos').textContent = '$' + totales.total.toFixed(2);
 
             // Deudas
@@ -817,7 +788,7 @@
                 const falta = deuda.monto_total - deuda.monto_pagado;
                 html += `
                     <div class="item-row">
-                        <input type="checkbox" class="checkbox" ${deuda.estado === 'pagado' ? 'checked' : ''} onchange="marcarDeudaPagada(${deuda.id}, this.checked)">
+                        <input type="checkbox" class="checkbox" ${deuda.monto_pagado > 0 ? 'checked' : ''} onchange="marcarDeudaPagada(${deuda.id}, this.checked)">
                         <div class="item-name">${deuda.deuda_nombre}<br><small style="color: var(--text-light); font-weight: normal;">Tipo: ${deuda.tipo}</small></div>
                         <input type="number" value="${deuda.monto_pagado}" onchange="actualizarMontoPagadoDeuda(${deuda.id}, this.value)" class="input-field" style="grid-column: 3;">
                         <div class="item-monto">$${falta.toFixed(2)}</div>
@@ -829,11 +800,13 @@
             // Gastos fijos
             html = '';
             datosEgresos.gastos.forEach(gasto => {
+                const falta = gasto.monto_total - gasto.monto_pagado;
                 html += `
                     <div class="item-row">
-                        <input type="checkbox" class="checkbox" ${gasto.estado === 'pagado' ? 'checked' : ''} onchange="marcarGastoPagado(${gasto.id}, this.checked)">
+                        <input type="checkbox" class="checkbox" ${gasto.monto_pagado > 0 ? 'checked' : ''} onchange="marcarGastoPagado(${gasto.id}, this.checked)">
                         <div class="item-name">${gasto.gasto_nombre}</div>
-                        <div class="item-monto">$${gasto.monto_total}</div>
+                        <input type="number" value="${gasto.monto_pagado}" onchange="actualizarMontoGasto(${gasto.id}, this.value)" class="input-field" style="grid-column: 3;">
+                        <div class="item-monto">$${falta.toFixed(2)}</div>
                     </div>
                 `;
             });
@@ -858,7 +831,7 @@
                 const falta = egreso.monto_total - egreso.monto_pagado;
                 html += `
                     <div class="item-row">
-                        <input type="checkbox" class="checkbox" ${egreso.estado === 'pagado' ? 'checked' : ''} onchange="marcarEgresoPagado(${egreso.id}, this.checked)">
+                        <input type="checkbox" class="checkbox" ${egreso.monto_pagado > 0 ? 'checked' : ''} onchange="marcarEgresoPagado(${egreso.id}, this.checked)">
                         <div class="item-name">${egreso.emoji} ${egreso.nombre}</div>
                         <input type="number" value="${egreso.monto_pagado}" onchange="actualizarMontoPagadoEgreso(${egreso.id}, this.value)" class="input-field" style="grid-column: 3;">
                         <div class="item-monto">$${falta.toFixed(2)}</div>
@@ -900,9 +873,9 @@
                 <div class="card" style="border-top-color: #FFF4D6;">
                     <div style="line-height: 1.8;">
                         <p style="margin-bottom: 12px;">📌 <strong>Cómo usar la app:</strong></p>
-                        <p style="margin-bottom: 12px;">✅ Marca el <strong>check</strong> en ingresos cuando los recibas</p>
-                        <p style="margin-bottom: 12px;">✅ Marca el <strong>check</strong> en egresos cuando los pagues</p>
-                        <p style="margin-bottom: 12px;">✅ Si es <strong>pago parcial</strong>, ingresa el monto pagado</p>
+                        <p style="margin-bottom: 12px;">✅ Marca el <strong>check</strong> cuando hayas recibido el ingreso</p>
+                        <p style="margin-bottom: 12px;">✅ Marca el <strong>check</strong> cuando hayas pagado el egreso</p>
+                        <p style="margin-bottom: 12px;">✅ Si es <strong>pago parcial</strong>, ingresa cuánto pagaste</p>
                         <p style="margin-bottom: 12px;">✅ Los totales se actualizan <strong>automáticamente</strong></p>
                     </div>
                 </div>
@@ -917,46 +890,41 @@
         }
 
         async function marcarDeudaPagada(id, marcado) {
-            const estado = marcado ? 'pagado' : 'pendiente';
             const egreso = datosEgresos.deudas.find(d => d.id === id);
             const montoPagado = marcado ? egreso.monto_total : 0;
-            await supabase.from('pagos_deudas').update({ estado, monto_pagado: montoPagado }).eq('id', id);
+            await supabase.from('pagos_deudas').update({ monto_pagado: montoPagado }).eq('id', id);
             cargarDatos();
         }
 
         async function actualizarMontoPagadoDeuda(id, monto) {
             const montoPagado = parseFloat(monto) || 0;
-            const egreso = datosEgresos.deudas.find(d => d.id === id);
-            let estado = 'pendiente';
-            if (montoPagado > 0 && montoPagado < egreso.monto_total) estado = 'parcial';
-            else if (montoPagado >= egreso.monto_total) estado = 'pagado';
-            await supabase.from('pagos_deudas').update({ monto_pagado: montoPagado, estado }).eq('id', id);
+            await supabase.from('pagos_deudas').update({ monto_pagado: montoPagado }).eq('id', id);
             cargarDatos();
         }
 
         async function marcarGastoPagado(id, marcado) {
-            const estado = marcado ? 'pagado' : 'pendiente';
             const gasto = datosEgresos.gastos.find(g => g.id === id);
             const montoPagado = marcado ? gasto.monto_total : 0;
-            await supabase.from('pagos_gastos_fijos').update({ estado, monto_pagado: montoPagado }).eq('id', id);
+            await supabase.from('pagos_gastos_fijos').update({ monto_pagado: montoPagado }).eq('id', id);
+            cargarDatos();
+        }
+
+        async function actualizarMontoGasto(id, monto) {
+            const montoPagado = parseFloat(monto) || 0;
+            await supabase.from('pagos_gastos_fijos').update({ monto_pagado: montoPagado }).eq('id', id);
             cargarDatos();
         }
 
         async function marcarEgresoPagado(id, marcado) {
-            const estado = marcado ? 'pagado' : 'pendiente';
             const egreso = datosEgresos.esporadicos.find(e => e.id === id);
             const montoPagado = marcado ? egreso.monto_total : 0;
-            await supabase.from('egresos_esporadicos').update({ estado, monto_pagado: montoPagado }).eq('id', id);
+            await supabase.from('egresos_esporadicos').update({ monto_pagado: montoPagado }).eq('id', id);
             cargarDatos();
         }
 
         async function actualizarMontoPagadoEgreso(id, monto) {
             const montoPagado = parseFloat(monto) || 0;
-            const egreso = datosEgresos.esporadicos.find(e => e.id === id);
-            let estado = 'pendiente';
-            if (montoPagado > 0 && montoPagado < egreso.monto_total) estado = 'parcial';
-            else if (montoPagado >= egreso.monto_total) estado = 'pagado';
-            await supabase.from('egresos_esporadicos').update({ monto_pagado: montoPagado, estado }).eq('id', id);
+            await supabase.from('egresos_esporadicos').update({ monto_pagado: montoPagado }).eq('id', id);
             cargarDatos();
         }
 
@@ -1095,7 +1063,6 @@
             }
         });
 
-        // Cerrar modals al click fuera
         document.querySelectorAll('.modal').forEach(modal => {
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
