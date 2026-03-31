@@ -419,8 +419,8 @@
         // Inicializar Supabase
         const SUPABASE_URL = 'https://eebfdzyxgsejunphsyyi.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVlYmZkenl4Z3NlanVucGhzeXlpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5MDMxODksImV4cCI6MjA5MDQ3OTE4OX0.JHXM-otv5PVMwXhAPRJSex4_RS2yI76Vwx-oeBfRmX0';
-        const { createClient } = window.supabase;
-        const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+       const { createClient } = window.supabase;
+   const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
 
         const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
         const DEUDAS = [
